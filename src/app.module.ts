@@ -2,10 +2,17 @@ import { Module, ValidationPipe } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './modules/users/users.module';
-import { AuthController } from './modules/auth/auth.controller';
 import { APP_PIPE } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { AuthModule } from './modules/auth/auth.module';
+import {
+    AcceptLanguageResolver,
+    HeaderResolver,
+    I18nModule,
+    QueryResolver,
+} from 'nestjs-i18n';
+import path from 'path';
 
 @Module({
     imports: [
@@ -24,13 +31,26 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
                     username: config.get('DB_USER'),
                     password: config.get('DB_PASSWORD'),
                     database: config.get('DB_NAME'),
-                    entities: [__dirname + '/../**/*.entity.{ts,js}'],
+                    entities: [__dirname + '/**/*.entity{.ts,.js}'],
                     synchronize: true,
                 };
             },
         }),
+        I18nModule.forRoot({
+            fallbackLanguage: 'en',
+            loaderOptions: {
+                path: path.join(__dirname, '/i18n/'),
+                watch: true,
+            },
+            resolvers: [
+                AcceptLanguageResolver,
+                { use: QueryResolver, options: ['lang'] },
+                new HeaderResolver(['x-lang']),
+            ],
+        }),
+        AuthModule,
     ],
-    controllers: [AppController, AuthController],
+    controllers: [AppController],
     providers: [
         AppService,
         {
