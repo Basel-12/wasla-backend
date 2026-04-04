@@ -21,6 +21,10 @@ export class UsersService {
         return this.usersRepository.findOne({ where: { phone } });
     }
 
+    getUserByEmail(email: string) {
+        return this.usersRepository.findOne({ where: { email } });
+    }
+
     addUser(user: CreateUserDto) {
         const newUser = this.usersRepository.create(user);
         return this.usersRepository.save(newUser);

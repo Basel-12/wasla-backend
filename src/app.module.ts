@@ -13,6 +13,7 @@ import {
     QueryResolver,
 } from 'nestjs-i18n';
 import path from 'path';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
     imports: [
@@ -47,6 +48,15 @@ import path from 'path';
                 { use: QueryResolver, options: ['lang'] },
                 new HeaderResolver(['x-lang']),
             ],
+        }),
+        JwtModule.registerAsync({
+            inject: [ConfigService],
+            global: true,
+            useFactory: (config: ConfigService) => {
+                return {
+                    secret: config.get('JWT_SECRET'),
+                };
+            },
         }),
         AuthModule,
     ],
