@@ -77,6 +77,18 @@ describe('AuthService', () => {
         expect(service).toBeDefined();
     });
 
+    it('should signup successfully', async () => {
+        const newUser = {
+            name: 'test',
+            phone: '1234567890',
+            email: 'test3@test.com',
+            password: 'test',
+        };
+        const user = await service.signup(newUser);
+        expect(user).toBeDefined();
+        expect(user.email).toBe(newUser.email);
+    });
+
     it('should throw error if user already exists', async () => {
         const newUser = {
             name: 'test',
@@ -115,8 +127,8 @@ describe('AuthService', () => {
             email: 'test2@test.com',
             password: 'test6',
         };
-        await expect(
-            service.login(user.email, 'wrong-password'),
-        ).rejects.toThrow(UnauthorizedException);
+        await expect(service.login(user.email, user.password)).rejects.toThrow(
+            UnauthorizedException,
+        );
     });
 });
