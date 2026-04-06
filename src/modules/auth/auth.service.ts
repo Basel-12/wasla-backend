@@ -9,6 +9,8 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { I18nService } from 'nestjs-i18n';
+import { OtpService } from '../otp/otp.service';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class AuthService {
@@ -17,20 +19,31 @@ export class AuthService {
         private jwtService: JwtService,
         private config: ConfigService,
         private i18nService: I18nService,
+        private otpService: OtpService,
+        private mailService: MailService,
     ) {}
 
-    async signup(newUser: CreateUserDto) {
-        const user = await this.usersService.getUserByEmail(newUser.email);
+    async signup(newUser: CreateUserDto, lang: string) {
+        const user = await this.usersService.userExists(
+            newUser.email,
+            newUser.phone,
+        );
         if (user)
             throw new BadRequestException(
                 this.i18nService.t('auth.USERALREADYEXISTS'),
             );
 
         const hashedPassword = await bcrypt.hash(newUser.password, 12);
-        return this.usersService.addUser({
+        const createdUser = await this.usersService.addUser({
             ...newUser,
             password: hashedPassword,
         });
+
+        // TODO: add email as a job to bullmq
+        void this.sendOtp(createdUser.id, 'signup', lang).catch((err) =>
+            console.log(err),
+        );
+        return createdUser;
     }
 
     async login(email: string, password: string) {
@@ -52,5 +65,41 @@ export class AuthService {
                 expiresIn: this.config.get('JWT_EXPIRES_IN') || '1d',
             }),
         };
+    }
+
+    async sendOtp(userId: number, reason: string, lang: string) {
+        const otp = this.otpService.generateOtp(6);
+        const otpEntity = await this.otpService.createOtp(
+            userId,
+            reason,
+            otp,
+            5,
+        );
+        const user = await this.usersService.getUserById(userId);
+        // TODO: Send OTP to user via email
+        await this.mailService.sendEmail(
+            user?.email || '',
+            'OTP Verification',
+            'otp',
+            {
+                name: user?.name,
+                otp: otp,
+                minutes: Math.ceil(
+                    (new Date(otpEntity.expiresAt).getTime() - Date.now()) /
+                        60000,
+                ),
+            },
+            lang,
+        );
+        return otp;
+    }
+
+    async verifyOtp(userId: number, otp: number) {
+        const existingOtp = await this.otpService.verifyOtp(userId, otp);
+        if (existingOtp.expiresAt < new Date())
+            throw new BadRequestException(
+                this.i18nService.t('auth.OTP_EXPIRED'),
+            );
+        return this.usersService.updateUser(userId, { isVerified: true });
     }
 }

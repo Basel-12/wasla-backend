@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
-import { Users } from '../users/entities/user.entity';
+import { User } from '../users/entities/user.entity';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
@@ -11,7 +11,7 @@ import { BadRequestException, UnauthorizedException } from '@nestjs/common';
 describe('AuthService', () => {
     let service: AuthService;
     let fakeUsersService: Partial<UsersService>;
-    const users: Users[] = [];
+    const users: User[] = [];
 
     beforeEach(async () => {
         fakeUsersService = {
@@ -24,7 +24,7 @@ describe('AuthService', () => {
                 const newUser = {
                     id: Math.floor(Math.random() * 1000000),
                     ...user,
-                } as Users;
+                } as User;
                 users.push(newUser);
                 return Promise.resolve(newUser);
             },

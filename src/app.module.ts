@@ -2,7 +2,7 @@ import { Module, ValidationPipe } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './modules/users/users.module';
-import { APP_PIPE } from '@nestjs/core';
+// import { APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './modules/auth/auth.module';
@@ -14,6 +14,9 @@ import {
 } from 'nestjs-i18n';
 import path from 'path';
 import { JwtModule } from '@nestjs/jwt';
+import { OtpModule } from './modules/otp/otp.module';
+import { MailModule } from './modules/mail/mail.module';
+// import { SerailzeInterceptor } from './common/interceptors/serailze.interceptor';
 
 @Module({
     imports: [
@@ -59,6 +62,8 @@ import { JwtModule } from '@nestjs/jwt';
             },
         }),
         AuthModule,
+        OtpModule,
+        MailModule,
     ],
     controllers: [AppController],
     providers: [
@@ -69,6 +74,10 @@ import { JwtModule } from '@nestjs/jwt';
                 whitelist: true,
             }),
         },
+        // {
+        //     provide: APP_INTERCEPTOR,
+        //     useClass: SerailzeInterceptor,
+        // },
     ],
 })
 export class AppModule {}

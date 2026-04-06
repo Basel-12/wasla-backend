@@ -1,12 +1,13 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Otp } from 'src/modules/otp/entities/otp.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
-enum UserRole {
+export enum UserRole {
     USER = 'user',
     ADMIN = 'admin',
 }
 
 @Entity({ name: 'users' })
-export class Users {
+export class User {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -25,11 +26,8 @@ export class Users {
     @Column({ type: 'enum', enum: UserRole, default: UserRole.USER })
     role: UserRole;
 
-    @Column({ nullable: true })
-    otp: string;
-
-    @Column({ nullable: true })
-    otpExpiresAt: Date;
+    @OneToMany(() => Otp, (otp) => otp.user)
+    otps: Otp[];
 
     @Column({ default: false })
     isVerified: boolean;
