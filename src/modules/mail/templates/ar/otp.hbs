@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>رمز التحقق</title>
+        <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet" />
+        <style>
+            * { box-sizing: border-box; }
+            body {
+                margin: 0;
+                padding: 0;
+                background: #f6f6f8;
+                font-family: 'Cairo', Arial, sans-serif;
+                color: #1f2937;
+                direction: rtl;
+                -webkit-text-size-adjust: 100%;
+                -ms-text-size-adjust: 100%;
+            }
+            .email-wrapper {
+                width: 100%;
+                padding: 40px 16px;
+            }
+            .email-center {
+                max-width: 520px;
+                margin: 0 auto;
+            }
+            .logo-wrap {
+                text-align: center;
+                margin-bottom: 24px;
+            }
+            .logo-icon {
+                display: inline-block;
+                background: linear-gradient(135deg, #5140E8, #15AA96);
+                border-radius: 14px;
+                width: 50px;
+                height: 50px;
+                line-height: 50px;
+                font-size: 26px;
+                color: #fff;
+                margin-bottom: 10px;
+            }
+            .logo-name {
+                font-size: 20px;
+                font-weight: 700;
+                color: #1f2937;
+            }
+            .card {
+                background: #ffffff;
+                border-radius: 20px;
+                overflow: hidden;
+                box-shadow: 0 4px 28px rgba(81, 64, 232, 0.10);
+                width: 100%;
+            }
+            .gradient-bar {
+                height: 5px;
+                background: linear-gradient(90deg, #5140E8 0%, #15AA96 50%, #ED4181 100%);
+                font-size: 0;
+                line-height: 0;
+            }
+            .card-body {
+                padding: 36px 40px 32px 40px;
+            }
+            h1 {
+                margin: 0 0 8px 0;
+                font-size: 22px;
+                font-weight: 700;
+                color: #1f2937;
+                line-height: 1.4;
+            }
+            .intro {
+                margin: 0 0 28px 0;
+                font-size: 15px;
+                color: #63677E;
+                line-height: 1.8;
+            }
+            .otp-box {
+                background: #f6f6f8;
+                border: 2px dashed #5140E8;
+                border-radius: 16px;
+                padding: 30px 20px;
+                text-align: center;
+                margin-bottom: 24px;
+            }
+            .otp-label {
+                margin: 0 0 12px 0;
+                font-size: 11px;
+                font-weight: 600;
+                color: #63677E;
+                letter-spacing: 2.5px;
+            }
+            .otp-code {
+                font-size: 48px;
+                font-weight: 700;
+                letter-spacing: 12px;
+                color: #5140E8;
+                direction: ltr;
+                font-family: 'Courier New', monospace;
+                line-height: 1.1;
+                display: block;
+            }
+            .otp-badge {
+                display: inline-block;
+                background: rgba(21, 170, 150, 0.08);
+                border: 1px solid rgba(21, 170, 150, 0.35);
+                border-radius: 20px;
+                padding: 5px 18px;
+                font-size: 13px;
+                font-weight: 600;
+                color: #15AA96;
+                margin-top: 16px;
+            }
+            .divider {
+                height: 1px;
+                background: #f0f0f4;
+                margin-bottom: 24px;
+                font-size: 0;
+                line-height: 0;
+            }
+            .security-note {
+                background: #fff5f8;
+                border-right: 4px solid #ED4181;
+                border-radius: 10px;
+                padding: 14px 16px;
+                font-size: 13px;
+                color: #63677E;
+                line-height: 1.8;
+                margin: 0;
+            }
+            .card-footer {
+                background: #f6f6f8;
+                padding: 20px 40px;
+                text-align: center;
+                border-top: 1px solid #ebebef;
+            }
+            .footer-copy {
+                margin: 0 0 6px 0;
+                font-size: 12px;
+                color: #63677E;
+            }
+            .footer-link {
+                color: #5140E8;
+                text-decoration: none;
+                font-weight: 600;
+                font-size: 12px;
+            }
+            .bottom-note {
+                margin: 20px 0 0 0;
+                font-size: 12px;
+                color: #63677E;
+                text-align: center;
+            }
+
+            /* ── Responsive ── */
+            @media only screen and (max-width: 560px) {
+                .email-wrapper {
+                    padding: 24px 12px !important;
+                }
+                .card-body {
+                    padding: 28px 20px 24px 20px !important;
+                }
+                h1 {
+                    font-size: 19px !important;
+                }
+                .intro {
+                    font-size: 14px !important;
+                }
+                .otp-code {
+                    font-size: 36px !important;
+                    letter-spacing: 8px !important;
+                }
+                .card-footer {
+                    padding: 18px 20px !important;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="email-wrapper">
+            <div class="email-center">
+
+                <!-- Logo -->
+                <div class="logo-wrap">
+                    <div class="logo-icon">✦</div>
+                    <div class="logo-name">VocalAid</div>
+                </div>
+
+                <!-- Card -->
+                <div class="card">
+                    <div class="gradient-bar"></div>
+
+                    <div class="card-body">
+                        <h1>تأكيد بريدك الإلكتروني</h1>
+                        <p class="intro">
+                            مرحبًا <strong style="color:#1f2937;font-weight:700;">{{name}}</strong>، استخدم رمز التحقق أدناه لإكمال عمليتك. هذا الرمز سري ولا تشاركه مع أحد.
+                        </p>
+
+                        <!-- OTP -->
+                        <div class="otp-box">
+                            <p class="otp-label">رمز التحقق الخاص بك</p>
+                            <span class="otp-code">{{otp}}</span>
+                            <div>
+                                <span class="otp-badge">⏱ &nbsp;صالح لمدة {{minutes}} دقائق فقط</span>
+                            </div>
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <!-- Security note -->
+                        <p class="security-note">
+                            🔒 <strong style="color:#ED4181;">تنبيه أمني:</strong> إذا لم تطلب هذا الرمز، تجاهل هذه الرسالة تمامًا. لن يتمكن أحد من الوصول إلى حسابك دون هذا الرمز.
+                        </p>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="card-footer">
+                        <p class="footer-copy">© 2025 VocalAid · جميع الحقوق محفوظة</p>
+                        <a href="#" class="footer-link">سياسة الخصوصية</a>
+                    </div>
+                </div>
+
+                <p class="bottom-note">تم إرسال هذا البريد تلقائيًا · يُرجى عدم الرد عليه</p>
+
+            </div>
+        </div>
+    </body>
+</html>
