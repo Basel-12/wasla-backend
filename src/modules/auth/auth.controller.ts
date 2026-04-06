@@ -26,7 +26,7 @@ export class AuthController {
     async signup(@Body() newUser: CreateUserDto, @I18nLang() lang: string) {
         const user = await this.authService.signup(newUser, lang);
         return {
-            succes: true,
+            success: true,
             message: this.i18nService.t('auth.USERREGISTERED'),
             data: user,
         };
@@ -41,7 +41,7 @@ export class AuthController {
     ) {
         const { access_token } = await this.authService.login(email, password);
         return {
-            succes: true,
+            success: true,
             message: this.i18nService.t('auth.LOGINSUCCESSFUL'),
             data: access_token,
         };
