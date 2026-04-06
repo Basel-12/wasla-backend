@@ -16,6 +16,8 @@ import path from 'path';
 import { JwtModule } from '@nestjs/jwt';
 import { OtpModule } from './modules/otp/otp.module';
 import { MailModule } from './modules/mail/mail.module';
+import { APP_PIPE } from '@nestjs/core';
+import { ThrottlerModule } from '@nestjs/throttler';
 // import { SerailzeInterceptor } from './common/interceptors/serailze.interceptor';
 
 @Module({
@@ -60,6 +62,14 @@ import { MailModule } from './modules/mail/mail.module';
                     secret: config.get('JWT_SECRET'),
                 };
             },
+        }),
+        ThrottlerModule.forRoot({
+            throttlers: [
+                {
+                    ttl: 60000,
+                    limit: 30,
+                },
+            ],
         }),
         AuthModule,
         OtpModule,

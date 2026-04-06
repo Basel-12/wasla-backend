@@ -46,7 +46,10 @@ export class AuthGuard implements CanActivate {
         const authorization = request.header('authorization');
         const token = (authorization && authorization.split(' ')[1]) || '';
 
-        if (!token) throw new UnauthorizedException(this.i18nService.t('auth.INVALIDTOKEN'));
+        if (!token)
+            throw new UnauthorizedException(
+                this.i18nService.t('auth.INVALIDTOKEN'),
+            );
 
         try {
             const decoded = this.jwtService.verify<AuthenticatedUser>(token, {
@@ -58,7 +61,9 @@ export class AuthGuard implements CanActivate {
             request.user = decoded;
             return true;
         } catch {
-            throw new UnauthorizedException(this.i18nService.t('auth.INVALIDTOKEN'));
+            throw new UnauthorizedException(
+                this.i18nService.t('auth.INVALIDTOKEN'),
+            );
         }
     }
 }
