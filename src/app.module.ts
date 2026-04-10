@@ -19,6 +19,8 @@ import { MailModule } from './modules/mail/mail.module';
 import { APP_PIPE } from '@nestjs/core';
 import { ThrottlerModule } from '@nestjs/throttler';
 // import { SerailzeInterceptor } from './common/interceptors/serailze.interceptor';
+import { MailQueueModule } from './modules/queues/mail-queue/mail-queue.module';
+import { BullModule } from '@nestjs/bullmq';
 
 @Module({
     imports: [
@@ -71,9 +73,23 @@ import { ThrottlerModule } from '@nestjs/throttler';
                 },
             ],
         }),
+        BullModule.forRootAsync({
+            inject: [ConfigService],
+            useFactory: (config: ConfigService) => {
+                return {
+                    connection: {
+                        host: config.get('REDIS_HOST'),
+                        port: Number(config.get('REDIS_PORT')) || 6379,
+                        // password: config.get('REDIS_PASSWORD'),
+                        db: Number(config.get('REDIS_DB')) || 0,
+                    },
+                };
+            },
+        }),
         AuthModule,
         OtpModule,
         MailModule,
+        MailQueueModule,
     ],
     controllers: [AppController],
     providers: [

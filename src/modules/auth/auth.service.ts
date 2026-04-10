@@ -10,7 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { I18nService } from 'nestjs-i18n';
 import { OtpService } from '../otp/otp.service';
-import { MailService } from '../mail/mail.service';
+import { MailQueueService } from '../queues/mail-queue/mail-queue.service';
 
 @Injectable()
 export class AuthService {
@@ -20,7 +20,7 @@ export class AuthService {
         private config: ConfigService,
         private i18nService: I18nService,
         private otpService: OtpService,
-        private mailService: MailService,
+        private mailQueueService: MailQueueService,
     ) {}
 
     async signup(newUser: CreateUserDto, lang: string) {
@@ -77,11 +77,11 @@ export class AuthService {
         );
         const user = await this.usersService.getUserById(userId);
         // TODO: Send OTP to user via email
-        await this.mailService.sendEmail(
-            user?.email || '',
-            'OTP Verification',
-            'otp',
-            {
+        await this.mailQueueService.addSendMailJob({
+            to: user?.email || '',
+            subject: 'OTP Verification',
+            template: 'otp',
+            context: {
                 name: user?.name,
                 otp: otp,
                 minutes: Math.ceil(
@@ -89,8 +89,8 @@ export class AuthService {
                         60000,
                 ),
             },
-            lang,
-        );
+            locale: lang,
+        });
         return otp;
     }
 
