@@ -16,14 +16,17 @@ import path from 'path';
 import { JwtModule } from '@nestjs/jwt';
 import { OtpModule } from './modules/otp/otp.module';
 import { MailModule } from './modules/mail/mail.module';
-import { APP_PIPE } from '@nestjs/core';
+import { APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { ThrottlerModule } from '@nestjs/throttler';
 // import { SerailzeInterceptor } from './common/interceptors/serailze.interceptor';
 import { MailQueueModule } from './modules/queues/mail-queue/mail-queue.module';
 import { BullModule } from '@nestjs/bullmq';
+import { LoggerModule } from './common/utils/logger.module';
+import { LoggerInterceptor } from './common/interceptors/logger.interceptor';
 
 @Module({
     imports: [
+        LoggerModule,
         UsersModule,
         ConfigModule.forRoot({
             isGlobal: true,
@@ -99,6 +102,10 @@ import { BullModule } from '@nestjs/bullmq';
             useValue: new ValidationPipe({
                 whitelist: true,
             }),
+        },
+        {
+            provide: APP_INTERCEPTOR,
+            useClass: LoggerInterceptor,
         },
         // {
         //     provide: APP_INTERCEPTOR,
