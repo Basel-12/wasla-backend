@@ -23,6 +23,7 @@ import { MailQueueModule } from './modules/queues/mail-queue/mail-queue.module';
 import { BullModule } from '@nestjs/bullmq';
 import { LoggerModule } from './common/utils/logger.module';
 import { LoggerInterceptor } from './common/interceptors/logger.interceptor';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 @Module({
     imports: [
@@ -88,6 +89,10 @@ import { LoggerInterceptor } from './common/interceptors/logger.interceptor';
                     },
                 };
             },
+        }),
+        ServeStaticModule.forRoot({
+            rootPath: path.join(__dirname, '..', 'public'),
+            serveRoot: '/public',
         }),
         AuthModule,
         OtpModule,

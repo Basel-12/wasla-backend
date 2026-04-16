@@ -2,7 +2,7 @@
     <head>
         <meta charset='UTF-8' />
         <meta name='viewport' content='width=device-width, initial-scale=1.0' />
-        <title>OTP Verification</title>
+        <title>OTP Verification – Wasla</title>
         <link
             href='https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap'
             rel='stylesheet'
@@ -10,143 +10,197 @@
         <style>
             * {
                 box-sizing: border-box;
-            }
-            body {
                 margin: 0;
                 padding: 0;
-                background: #f6f6f8;
+            }
+            body {
+                background: #eeedf9;
                 font-family: 'Cairo', Arial, sans-serif;
                 color: #1f2937;
-                direction: ltr;
                 -webkit-text-size-adjust: 100%;
                 -ms-text-size-adjust: 100%;
             }
-            .email-wrapper {
-                width: 100%;
-                padding: 40px 16px;
+            .wrapper {
+                padding: 48px 16px;
             }
-            .email-center {
+            .center {
                 max-width: 520px;
                 margin: 0 auto;
             }
-            .logo-wrap {
+
+            /* Logo */
+            .logo-area {
                 text-align: center;
-                margin-bottom: 24px;
+                margin-bottom: 28px;
             }
-            .logo-icon {
-                display: inline-block;
-                background: linear-gradient(135deg, #5140e8, #15aa96);
-                border-radius: 14px;
-                width: 50px;
-                height: 50px;
-                line-height: 50px;
-                font-size: 26px;
-                color: #fff;
+            .logo-mark {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 58px;
+                height: 58px;
+                border-radius: 18px;
+                background: linear-gradient(135deg, #5140e8 0%, #15aa96 100%);
                 margin-bottom: 10px;
+            }
+            .logo-mark img {
+                width: 34px;
+                height: 34px;
             }
             .logo-name {
                 font-size: 20px;
-                font-weight: 700;
-                color: #1f2937;
+                font-weight: 900;
+                color: #5140e8;
             }
+            .logo-sub {
+                font-size: 11px;
+                color: #63677e;
+                letter-spacing: 1.5px;
+                text-transform: uppercase;
+                margin-top: 2px;
+            }
+
+            /* Card */
             .card {
-                background: #ffffff;
-                border-radius: 20px;
+                background: #fff;
+                border-radius: 24px;
                 overflow: hidden;
-                box-shadow: 0 4px 28px rgba(81, 64, 232, 0.1);
-                width: 100%;
+                box-shadow: 0 8px 44px rgba(81, 64, 232, 0.13);
             }
-            .gradient-bar {
-                height: 5px;
+            .top-bar {
+                height: 4px;
                 background: linear-gradient(
                     90deg,
                     #ed4181 0%,
                     #5140e8 50%,
                     #15aa96 100%
                 );
-                font-size: 0;
-                line-height: 0;
             }
             .card-body {
-                padding: 36px 40px 32px 40px;
+                padding: 40px 44px 36px;
+            }
+
+            /* Heading */
+            .greet {
+                display: inline-block;
+                font-size: 11px;
+                font-weight: 700;
+                color: #15aa96;
+                letter-spacing: 2.5px;
+                text-transform: uppercase;
+                background: rgba(21, 170, 150, 0.09);
+                border: 1px solid rgba(21, 170, 150, 0.3);
+                border-radius: 100px;
+                padding: 4px 14px;
+                margin-bottom: 14px;
             }
             h1 {
-                margin: 0 0 8px 0;
-                font-size: 22px;
+                font-size: 23px;
                 font-weight: 700;
                 color: #1f2937;
                 line-height: 1.4;
+                margin-bottom: 10px;
             }
             .intro {
-                margin: 0 0 28px 0;
                 font-size: 15px;
                 color: #63677e;
-                line-height: 1.8;
+                line-height: 1.85;
+                margin-bottom: 32px;
             }
-            .otp-box {
-                background: #f6f6f8;
-                border: 2px dashed #5140e8;
-                border-radius: 16px;
-                padding: 30px 20px;
+            .intro strong {
+                color: #1f2937;
+                font-weight: 700;
+            }
+
+            /* OTP Box */
+            .otp-wrap {
+                background: #f5f4fe;
+                border: 2px solid #5140e8;
+                border-radius: 20px;
+                padding: 30px 20px 24px;
                 text-align: center;
-                margin-bottom: 24px;
+                margin-bottom: 28px;
             }
-            .otp-label {
-                margin: 0 0 12px 0;
+            .otp-eyebrow {
                 font-size: 11px;
-                font-weight: 600;
-                color: #63677e;
+                font-weight: 700;
                 letter-spacing: 2.5px;
                 text-transform: uppercase;
+                color: #63677e;
+                margin-bottom: 18px;
             }
-            .otp-code {
-                font-size: 48px;
-                font-weight: 700;
-                letter-spacing: 12px;
+
+            /* CRITICAL: single-line OTP fix */
+            .otp-digits {
+                display: block;
+                white-space: nowrap;
+                margin-bottom: 18px;
+                text-align: center;
+                font-size: 0;
+            }
+            .otp-digit {
+                display: inline-block;
+                width: 52px;
+                height: 64px;
+                line-height: 64px;
+                background: #fff;
+                border: 2px solid #c8c3f8;
+                border-radius: 14px;
+                font-size: 30px;
+                font-weight: 900;
                 color: #5140e8;
                 font-family: 'Courier New', monospace;
-                line-height: 1.1;
-                display: block;
-                padding-left: 12px;
+                text-align: center;
+                margin: 0 3px;
+                vertical-align: middle;
             }
-            .otp-badge {
+
+            .otp-timer {
                 display: inline-block;
-                background: rgba(21, 170, 150, 0.08);
+                background: rgba(21, 170, 150, 0.1);
                 border: 1px solid rgba(21, 170, 150, 0.35);
-                border-radius: 20px;
-                padding: 5px 18px;
+                border-radius: 100px;
+                padding: 6px 18px;
                 font-size: 13px;
                 font-weight: 600;
                 color: #15aa96;
-                margin-top: 16px;
             }
 
-            /* Steps row */
-            .steps-row {
+            /* Steps */
+            .steps {
                 display: table;
                 width: 100%;
-                margin-bottom: 24px;
                 border-collapse: separate;
                 border-spacing: 8px 0;
+                margin-bottom: 28px;
             }
-            .step-cell {
+            .step {
                 display: table-cell;
                 width: 33.33%;
-                background: #f6f6f8;
-                border-radius: 12px;
-                padding: 14px 10px;
+                background: #f8f8fc;
+                border-radius: 14px;
+                padding: 16px 10px 14px;
                 text-align: center;
                 vertical-align: top;
             }
-            .step-icon {
-                font-size: 20px;
-                margin-bottom: 6px;
+            .step-num {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 28px;
+                height: 28px;
+                border-radius: 50%;
+                background: #5140e8;
+                color: #fff;
+                font-size: 12px;
+                font-weight: 700;
+                margin-bottom: 8px;
             }
             .step-title {
                 font-size: 12px;
-                font-weight: 600;
+                font-weight: 700;
                 color: #1f2937;
-                margin-bottom: 2px;
+                margin-bottom: 3px;
             }
             .step-sub {
                 font-size: 11px;
@@ -155,129 +209,143 @@
 
             .divider {
                 height: 1px;
-                background: #f0f0f4;
+                background: #eeedf9;
                 margin-bottom: 24px;
-                font-size: 0;
-                line-height: 0;
             }
-            .security-note {
+
+            /* Security */
+            .security {
                 background: #fff5f8;
                 border-left: 4px solid #ed4181;
-                border-radius: 10px;
+                border-radius: 0 12px 12px 0;
                 padding: 14px 16px;
                 font-size: 13px;
                 color: #63677e;
                 line-height: 1.8;
-                margin: 0;
             }
-            .card-footer {
-                background: #f6f6f8;
-                padding: 20px 40px;
-                text-align: center;
-                border-top: 1px solid #ebebef;
-            }
-            .footer-copy {
-                margin: 0 0 6px 0;
-                font-size: 12px;
-                color: #63677e;
-            }
-            .footer-link {
-                color: #5140e8;
-                text-decoration: none;
-                font-weight: 600;
-                font-size: 12px;
-            }
-            .bottom-note {
-                margin: 20px 0 0 0;
-                font-size: 12px;
-                color: #63677e;
-                text-align: center;
+            .security strong {
+                color: #ed4181;
             }
 
-            /* ── Responsive ── */
-            @media only screen and (max-width: 560px) {
-                .email-wrapper {
-                    padding: 24px 12px !important;
+            /* Footer */
+            .card-footer {
+                background: #f8f8fc;
+                border-top: 1px solid #eeedf9;
+                padding: 22px 44px;
+                text-align: center;
+            }
+            .footer-text {
+                font-size: 12px;
+                color: #63677e;
+                margin-bottom: 6px;
+            }
+            .footer-link {
+                font-size: 12px;
+                font-weight: 600;
+                color: #5140e8;
+                text-decoration: none;
+            }
+            .bottom-note {
+                text-align: center;
+                margin-top: 20px;
+                font-size: 11px;
+                color: #8d91a8;
+            }
+
+            /* Mobile */
+            @media only screen and (max-width: 540px) {
+                .wrapper {
+                    padding: 24px 12px;
                 }
                 .card-body {
-                    padding: 28px 20px 24px 20px !important;
+                    padding: 28px 20px 24px;
                 }
                 h1 {
-                    font-size: 19px !important;
+                    font-size: 20px;
                 }
                 .intro {
-                    font-size: 14px !important;
+                    font-size: 14px;
                 }
-                .otp-code {
-                    font-size: 36px !important;
-                    letter-spacing: 8px !important;
-                    padding-left: 8px !important;
+                .otp-digit {
+                    width: 40px;
+                    height: 50px;
+                    line-height: 50px;
+                    font-size: 22px;
+                    margin: 0 2px;
+                    border-radius: 10px;
                 }
-                .steps-row {
-                    display: block !important;
-                    border-spacing: 0 !important;
+                .steps {
+                    display: block;
                 }
-                .step-cell {
-                    display: block !important;
-                    width: 100% !important;
-                    margin-bottom: 8px !important;
+                .step {
+                    display: block;
+                    width: 100%;
+                    margin-bottom: 8px;
                 }
                 .card-footer {
-                    padding: 18px 20px !important;
+                    padding: 18px 20px;
                 }
             }
         </style>
     </head>
     <body>
-        <div class='email-wrapper'>
-            <div class='email-center'>
+        <div class='wrapper'>
+            <div class='center'>
 
-                <!-- Logo -->
-                <div class='logo-wrap'>
-                    <div class='logo-icon'>✦</div>
-                    <div class='logo-name'>VocalAid</div>
+                <div class='logo-area'>
+                    <div class='logo-mark'>
+                        <img src='/public/logo.png' alt='Wasla' />
+                    </div>
+                    <div class='logo-name'>Wasla</div>
+                    <div class='logo-sub'>Sign Language Bridge</div>
                 </div>
 
-                <!-- Card -->
                 <div class='card'>
-                    <div class='gradient-bar'></div>
-
+                    <div class='top-bar'></div>
                     <div class='card-body'>
-                        <h1>Verify your email address</h1>
+
+                        <span class='greet'>Email Verification</span>
+                        <h1>Confirm your identity</h1>
                         <p class='intro'>
                             Hey
-                            <strong
-                                style='color:#1f2937;font-weight:700;'
-                            >{{name}}</strong>, use the one-time code below to
-                            complete your verification. Keep it private — don't
-                            share it with anyone.
+                            <strong>{{name}}</strong>, use the one-time code
+                            below to complete your verification. Keep it private
+                            — never share it with anyone.
                         </p>
 
-                        <!-- OTP -->
-                        <div class='otp-box'>
-                            <p class='otp-label'>Your verification code</p>
-                            <span class='otp-code'>{{otp}}</span>
-                            <div>
-                                <span class='otp-badge'>⏱ &nbsp;Expires in
-                                    {{minutes}}
-                                    minutes</span>
-                            </div>
+                        <div class='otp-wrap'>
+                            <p class='otp-eyebrow'>Your verification code</p>
+                            <div class='otp-digits'><span
+                                    class='otp-digit'
+                                >{{d1}}</span><span
+                                    class='otp-digit'
+                                >{{d2}}</span><span
+                                    class='otp-digit'
+                                >{{d3}}</span><span
+                                    class='otp-digit'
+                                >{{d4}}</span><span
+                                    class='otp-digit'
+                                >{{d5}}</span><span
+                                    class='otp-digit'
+                                >{{d6}}</span></div>
+                            <span class='otp-timer'>⏱&nbsp; Expires in
+                                {{minutes}}
+                                minutes</span>
                         </div>
 
-                        <!-- Steps -->
-                        <div class='steps-row'>
-                            <div class='step-cell'>
-                                <div class='step-icon'>📋</div>
+                        <div class='steps'>
+                            <div class='step'>
+                                <div class='step-num'>1</div>
                                 <div class='step-title'>Copy code</div>
                                 <div class='step-sub'>from this email</div>
                             </div>
-                            <div class='step-cell'>
-                                <div class='step-icon'>📱</div>
-                                <div class='step-title'>Open the app</div>
+                            <div class='step'>
+                                <div class='step-num'>2</div>
+                                <div class='step-title'>Open app</div>
                                 <div class='step-sub'>on your device</div>
                             </div>
-                            <div class='step-cell'>
-                                <div class='step-icon'>✅</div>
+                            <div class='step'>
+                                <div class='step-num'>3</div>
                                 <div class='step-title'>Paste &amp; verify</div>
                                 <div class='step-sub'>you're all set!</div>
                             </div>
@@ -285,26 +353,26 @@
 
                         <div class='divider'></div>
 
-                        <!-- Security note -->
-                        <p class='security-note'>
+                        <p class='security'>
                             🔒
-                            <strong style='color:#ED4181;'>Security notice:</strong>
+                            <strong>Security notice:</strong>
                             If you didn't request this code, you can safely
-                            ignore this email. Your account remains secure.
+                            ignore this email. Your account remains fully
+                            secure.
                         </p>
                     </div>
 
-                    <!-- Footer -->
                     <div class='card-footer'>
-                        <p class='footer-copy'>© 2025 VocalAid · All rights
+                        <p class='footer-text'>© 2025 Wasla · All rights
                             reserved</p>
                         <a href='#' class='footer-link'>Privacy Policy</a>
+                        &nbsp;·&nbsp;
+                        <a href='#' class='footer-link'>Terms of Service</a>
                     </div>
                 </div>
 
-                <p class='bottom-note'>This is an automated email · Please do
+                <p class='bottom-note'>This is an automated message · Please do
                     not reply directly</p>
-
             </div>
         </div>
     </body>

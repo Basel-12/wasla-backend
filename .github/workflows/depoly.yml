@@ -1,0 +1,31 @@
+on:
+  push:
+    branches:
+      - main
+name: Deploy to Production 🚀
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v3
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+
+      - name: 📦 Install dependencies
+        run: npm install
+
+      - name: 🏗️ Build project
+        run: npm run build
+
+      - name: 🚀 Deploy to EC2 via SSH
+        env:
+          NODE_ENV: production
+          # Add any other environment variables needed for deployment here
+        run: |
+          # Add your deployment commands here, for example:
+          # npm run deploy
+          echo "Deploying to production..."
