@@ -17,7 +17,8 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "migration:run": "npx typeorm migration:run -d dist/database/dataSource.js"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^2.3.4",
@@ -34,6 +35,7 @@
     "bullmq": "^5.73.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
+    "dotenv": "^17.4.2",
     "handlebars": "^4.7.9",
     "ioredis": "^5.10.1",
     "nestjs-i18n": "^10.6.0",

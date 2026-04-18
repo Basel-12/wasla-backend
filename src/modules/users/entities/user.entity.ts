@@ -1,4 +1,4 @@
-import { Otp } from 'src/modules/otp/entities/otp.entity';
+import { Otp } from '../../otp/entities/otp.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 export enum UserRole {

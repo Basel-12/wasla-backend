@@ -22,10 +22,28 @@ jobs:
         run: npm run build
 
       - name: 🚀 Deploy to EC2 via SSH
-        env:
-          NODE_ENV: production
-          # Add any other environment variables needed for deployment here
-        run: |
-          # Add your deployment commands here, for example:
-          # npm run deploy
-          echo "Deploying to production..."
+        uses: appleboy/ssh-action@v1.0.3
+        with: 
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_KEY }}
+          script: |
+
+            cd ~/wasla/gp-backend
+
+            git pull origin main
+
+            npm install
+
+            npm run build
+
+            npm run migration:run
+
+            pm2 reload api
+        # env:
+        #   NODE_ENV: production
+        #   # Add any other environment variables needed for deployment here
+        # run: |
+        #   # Add your deployment commands here, for example:
+        #   # npm run deploy
+        #   echo "Deploying to production..."

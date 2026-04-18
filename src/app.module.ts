@@ -44,7 +44,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
                     password: config.get('DB_PASSWORD'),
                     database: config.get('DB_NAME'),
                     entities: [__dirname + '/**/*.entity{.ts,.js}'],
-                    synchronize: true,
+                    synchronize: false,
                 };
             },
         }),
