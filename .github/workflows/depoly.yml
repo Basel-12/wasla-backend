@@ -39,7 +39,7 @@ jobs:
 
             npm run migration:run
 
-            pm2 reload api
+            /home/ubuntu/.nvm/versions/node/v24.14.1/bin/pm2 reload api
         # env:
         #   NODE_ENV: production
         #   # Add any other environment variables needed for deployment here
