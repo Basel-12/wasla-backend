@@ -69,6 +69,7 @@ export class AuthService {
 
     async sendOtp(userId: number, reason: string, lang: string) {
         const otp = this.otpService.generateOtp(6);
+        const otpString = otp.toString().padStart(6, '0').split('');
         const otpEntity = await this.otpService.createOtp(
             userId,
             reason,
@@ -88,6 +89,12 @@ export class AuthService {
                     (new Date(otpEntity.expiresAt).getTime() - Date.now()) /
                         60000,
                 ),
+                d1: otpString[0],
+                d2: otpString[1],
+                d3: otpString[2],
+                d4: otpString[3],
+                d5: otpString[4],
+                d6: otpString[5],
             },
             locale: lang,
         });
