@@ -45,9 +45,9 @@ export class UsersService {
         return this.usersRepository.save(user);
     }
 
-    async userExists(email: string, phone: string) {
+    async userExists(email: string) {
         const user = await this.usersRepository.findOne({
-            where: [{ email }, { phone }],
+            where: { email },
         });
         return user ? true : false;
     }
