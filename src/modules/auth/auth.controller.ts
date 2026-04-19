@@ -38,8 +38,13 @@ export class AuthController {
     async login(
         @Body('email') email: string,
         @Body('password') password: string,
+        @I18nLang() lang: string,
     ) {
-        const { access_token } = await this.authService.login(email, password);
+        const { access_token } = await this.authService.login(
+            email,
+            password,
+            lang,
+        );
         return {
             success: true,
             message: this.i18nService.t('auth.LOGINSUCCESSFUL'),

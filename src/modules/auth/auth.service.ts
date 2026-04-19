@@ -43,7 +43,7 @@ export class AuthService {
         return createdUser;
     }
 
-    async login(email: string, password: string) {
+    async login(email: string, password: string, lang: string) {
         const user = await this.usersService.getUserByEmail(email);
         if (!user)
             throw new UnauthorizedException(
@@ -55,6 +55,15 @@ export class AuthService {
             throw new UnauthorizedException(
                 this.i18nService.t('auth.INVALIDCREDENTIALS'),
             );
+
+        if (!user.isVerified) {
+            void this.sendOtp(user.id, 'login', lang).catch((err) =>
+                console.log(err),
+            );
+            throw new UnauthorizedException(
+                this.i18nService.t('auth.USERNOTVERIFIED'),
+            );
+        }
 
         const payload = { id: user.id, role: user.role };
         return {
