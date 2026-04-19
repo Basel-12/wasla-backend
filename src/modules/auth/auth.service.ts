@@ -1,5 +1,6 @@
 import {
     BadRequestException,
+    ForbiddenException,
     Injectable,
     UnauthorizedException,
 } from '@nestjs/common';
@@ -60,7 +61,7 @@ export class AuthService {
             void this.sendOtp(user.id, 'login', lang).catch((err) =>
                 console.log(err),
             );
-            throw new UnauthorizedException(
+            throw new ForbiddenException(
                 this.i18nService.t('auth.USERNOTVERIFIED'),
             );
         }
