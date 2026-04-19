@@ -1,379 +1,168 @@
-<html lang='en' dir='ltr'>
+<html lang='en'>
     <head>
         <meta charset='UTF-8' />
         <meta name='viewport' content='width=device-width, initial-scale=1.0' />
-        <title>OTP Verification – Wasla</title>
-        <link
-            href='https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap'
-            rel='stylesheet'
-        />
-        <style>
-            * {
-                box-sizing: border-box;
-                margin: 0;
-                padding: 0;
-            }
-            body {
-                background: #eeedf9;
-                font-family: 'Cairo', Arial, sans-serif;
-                color: #1f2937;
-                -webkit-text-size-adjust: 100%;
-                -ms-text-size-adjust: 100%;
-            }
-            .wrapper {
-                padding: 48px 16px;
-            }
-            .center {
-                max-width: 520px;
-                margin: 0 auto;
-            }
-
-            /* Logo */
-            .logo-area {
-                text-align: center;
-                margin-bottom: 28px;
-            }
-            .logo-mark {
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                width: 58px;
-                height: 58px;
-                border-radius: 18px;
-                background: linear-gradient(135deg, #5140e8 0%, #15aa96 100%);
-                margin-bottom: 10px;
-            }
-            .logo-mark img {
-                width: 34px;
-                height: 34px;
-            }
-            .logo-name {
-                font-size: 20px;
-                font-weight: 900;
-                color: #5140e8;
-            }
-            .logo-sub {
-                font-size: 11px;
-                color: #63677e;
-                letter-spacing: 1.5px;
-                text-transform: uppercase;
-                margin-top: 2px;
-            }
-
-            /* Card */
-            .card {
-                background: #fff;
-                border-radius: 24px;
-                overflow: hidden;
-                box-shadow: 0 8px 44px rgba(81, 64, 232, 0.13);
-            }
-            .top-bar {
-                height: 4px;
-                background: linear-gradient(
-                    90deg,
-                    #ed4181 0%,
-                    #5140e8 50%,
-                    #15aa96 100%
-                );
-            }
-            .card-body {
-                padding: 40px 44px 36px;
-            }
-
-            /* Heading */
-            .greet {
-                display: inline-block;
-                font-size: 11px;
-                font-weight: 700;
-                color: #15aa96;
-                letter-spacing: 2.5px;
-                text-transform: uppercase;
-                background: rgba(21, 170, 150, 0.09);
-                border: 1px solid rgba(21, 170, 150, 0.3);
-                border-radius: 100px;
-                padding: 4px 14px;
-                margin-bottom: 14px;
-            }
-            h1 {
-                font-size: 23px;
-                font-weight: 700;
-                color: #1f2937;
-                line-height: 1.4;
-                margin-bottom: 10px;
-            }
-            .intro {
-                font-size: 15px;
-                color: #63677e;
-                line-height: 1.85;
-                margin-bottom: 32px;
-            }
-            .intro strong {
-                color: #1f2937;
-                font-weight: 700;
-            }
-
-            /* OTP Box */
-            .otp-wrap {
-                background: #f5f4fe;
-                border: 2px solid #5140e8;
-                border-radius: 20px;
-                padding: 30px 20px 24px;
-                text-align: center;
-                margin-bottom: 28px;
-            }
-            .otp-eyebrow {
-                font-size: 11px;
-                font-weight: 700;
-                letter-spacing: 2.5px;
-                text-transform: uppercase;
-                color: #63677e;
-                margin-bottom: 18px;
-            }
-
-            /* CRITICAL: single-line OTP fix */
-            .otp-digits {
-                display: block;
-                white-space: nowrap;
-                margin-bottom: 18px;
-                text-align: center;
-                font-size: 0;
-            }
-            .otp-digit {
-                display: inline-block;
-                width: 52px;
-                height: 64px;
-                line-height: 64px;
-                background: #fff;
-                border: 2px solid #c8c3f8;
-                border-radius: 14px;
-                font-size: 30px;
-                font-weight: 900;
-                color: #5140e8;
-                font-family: 'Courier New', monospace;
-                text-align: center;
-                margin: 0 3px;
-                vertical-align: middle;
-            }
-
-            .otp-timer {
-                display: inline-block;
-                background: rgba(21, 170, 150, 0.1);
-                border: 1px solid rgba(21, 170, 150, 0.35);
-                border-radius: 100px;
-                padding: 6px 18px;
-                font-size: 13px;
-                font-weight: 600;
-                color: #15aa96;
-            }
-
-            /* Steps */
-            .steps {
-                display: table;
-                width: 100%;
-                border-collapse: separate;
-                border-spacing: 8px 0;
-                margin-bottom: 28px;
-            }
-            .step {
-                display: table-cell;
-                width: 33.33%;
-                background: #f8f8fc;
-                border-radius: 14px;
-                padding: 16px 10px 14px;
-                text-align: center;
-                vertical-align: top;
-            }
-            .step-num {
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                width: 28px;
-                height: 28px;
-                border-radius: 50%;
-                background: #5140e8;
-                color: #fff;
-                font-size: 12px;
-                font-weight: 700;
-                margin-bottom: 8px;
-            }
-            .step-title {
-                font-size: 12px;
-                font-weight: 700;
-                color: #1f2937;
-                margin-bottom: 3px;
-            }
-            .step-sub {
-                font-size: 11px;
-                color: #63677e;
-            }
-
-            .divider {
-                height: 1px;
-                background: #eeedf9;
-                margin-bottom: 24px;
-            }
-
-            /* Security */
-            .security {
-                background: #fff5f8;
-                border-left: 4px solid #ed4181;
-                border-radius: 0 12px 12px 0;
-                padding: 14px 16px;
-                font-size: 13px;
-                color: #63677e;
-                line-height: 1.8;
-            }
-            .security strong {
-                color: #ed4181;
-            }
-
-            /* Footer */
-            .card-footer {
-                background: #f8f8fc;
-                border-top: 1px solid #eeedf9;
-                padding: 22px 44px;
-                text-align: center;
-            }
-            .footer-text {
-                font-size: 12px;
-                color: #63677e;
-                margin-bottom: 6px;
-            }
-            .footer-link {
-                font-size: 12px;
-                font-weight: 600;
-                color: #5140e8;
-                text-decoration: none;
-            }
-            .bottom-note {
-                text-align: center;
-                margin-top: 20px;
-                font-size: 11px;
-                color: #8d91a8;
-            }
-
-            /* Mobile */
-            @media only screen and (max-width: 540px) {
-                .wrapper {
-                    padding: 24px 12px;
-                }
-                .card-body {
-                    padding: 28px 20px 24px;
-                }
-                h1 {
-                    font-size: 20px;
-                }
-                .intro {
-                    font-size: 14px;
-                }
-                .otp-digit {
-                    width: 40px;
-                    height: 50px;
-                    line-height: 50px;
-                    font-size: 22px;
-                    margin: 0 2px;
-                    border-radius: 10px;
-                }
-                .steps {
-                    display: block;
-                }
-                .step {
-                    display: block;
-                    width: 100%;
-                    margin-bottom: 8px;
-                }
-                .card-footer {
-                    padding: 18px 20px;
-                }
-            }
-        </style>
+        <title>Wasla OTP</title>
     </head>
-    <body>
-        <div class='wrapper'>
-            <div class='center'>
 
-                <div class='logo-area'>
-                    <div class='logo-mark'>
-                        <img src='/public/logo.png' alt='Wasla' />
-                    </div>
-                    <div class='logo-name'>Wasla</div>
-                    <div class='logo-sub'>Sign Language Bridge</div>
-                </div>
+    <body
+        style='margin:0;padding:0;background:#eeedf9;font-family:Cairo,Arial,sans-serif;'
+    >
 
-                <div class='card'>
-                    <div class='top-bar'></div>
-                    <div class='card-body'>
+        <table
+            width='100%'
+            cellpadding='0'
+            cellspacing='0'
+            border='0'
+            style='background:#eeedf9;padding:30px 10px;'
+        >
+            <tr>
+                <td align='center'>
 
-                        <span class='greet'>Email Verification</span>
-                        <h1>Confirm your identity</h1>
-                        <p class='intro'>
-                            Hey
-                            <strong>{{name}}</strong>, use the one-time code
-                            below to complete your verification. Keep it private
-                            — never share it with anyone.
-                        </p>
+                    <table
+                        width='520'
+                        cellpadding='0'
+                        cellspacing='0'
+                        border='0'
+                        style='max-width:520px;background:#ffffff;border-radius:20px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.08);'
+                    >
 
-                        <div class='otp-wrap'>
-                            <p class='otp-eyebrow'>Your verification code</p>
-                            <div class='otp-digits'><span
-                                    class='otp-digit'
-                                >{{d1}}</span><span
-                                    class='otp-digit'
-                                >{{d2}}</span><span
-                                    class='otp-digit'
-                                >{{d3}}</span><span
-                                    class='otp-digit'
-                                >{{d4}}</span><span
-                                    class='otp-digit'
-                                >{{d5}}</span><span
-                                    class='otp-digit'
-                                >{{d6}}</span></div>
-                            <span class='otp-timer'>⏱&nbsp; Expires in
-                                {{minutes}}
-                                minutes</span>
-                        </div>
+                        <tr>
+                            <td
+                                style='height:4px;background:linear-gradient(90deg,#ed4181,#5140e8,#15aa96);'
+                            ></td>
+                        </tr>
 
-                        <div class='steps'>
-                            <div class='step'>
-                                <div class='step-num'>1</div>
-                                <div class='step-title'>Copy code</div>
-                                <div class='step-sub'>from this email</div>
-                            </div>
-                            <div class='step'>
-                                <div class='step-num'>2</div>
-                                <div class='step-title'>Open app</div>
-                                <div class='step-sub'>on your device</div>
-                            </div>
-                            <div class='step'>
-                                <div class='step-num'>3</div>
-                                <div class='step-title'>Paste &amp; verify</div>
-                                <div class='step-sub'>you're all set!</div>
-                            </div>
-                        </div>
+                        <tr>
+                            <td
+                                align='center'
+                                style='padding:30px 20px 10px 20px;'
+                            >
 
-                        <div class='divider'></div>
+                                <img
+                                    src='https://api.vocalaid.app/public/logo.png'
+                                    width='48'
+                                    style='display:block;margin-bottom:10px;'
+                                />
 
-                        <p class='security'>
-                            🔒
-                            <strong>Security notice:</strong>
-                            If you didn't request this code, you can safely
-                            ignore this email. Your account remains fully
-                            secure.
-                        </p>
-                    </div>
+                                <div
+                                    style='font-size:22px;font-weight:800;color:#5140e8;'
+                                >
+                                    Wasla
+                                </div>
 
-                    <div class='card-footer'>
-                        <p class='footer-text'>© 2025 Wasla · All rights
-                            reserved</p>
-                        <a href='#' class='footer-link'>Privacy Policy</a>
-                        &nbsp;·&nbsp;
-                        <a href='#' class='footer-link'>Terms of Service</a>
-                    </div>
-                </div>
+                                <div style='font-size:12px;color:#777;'>
+                                    Sign Language Bridge
+                                </div>
 
-                <p class='bottom-note'>This is an automated message · Please do
-                    not reply directly</p>
-            </div>
-        </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td style='padding:20px 30px 10px 30px;'>
+
+                                <div
+                                    style='font-size:12px;font-weight:700;color:#15aa96;margin-bottom:10px;'
+                                >
+                                    EMAIL VERIFICATION
+                                </div>
+
+                                <div
+                                    style='font-size:22px;font-weight:700;color:#1f2937;margin-bottom:10px;'
+                                >
+                                    Confirm your identity
+                                </div>
+
+                                <div
+                                    style='font-size:14px;color:#63677e;line-height:1.6;'
+                                >
+                                    Hey
+                                    <b>{{name}}</b>, use the verification code
+                                    below to continue. Keep this code private.
+                                </div>
+
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td align='center' style='padding:20px;'>
+
+                                <table cellpadding='0' cellspacing='0'>
+                                    <tr>
+
+                                        <td
+                                            style='width:48px;height:58px;border:2px solid #5140e8;border-radius:12px;text-align:center;font-size:26px;font-weight:800;color:#5140e8;'
+                                        >{{d1}}</td>
+                                        <td width='6'></td>
+                                        <td
+                                            style='width:48px;height:58px;border:2px solid #5140e8;border-radius:12px;text-align:center;font-size:26px;font-weight:800;color:#5140e8;'
+                                        >{{d2}}</td>
+                                        <td width='6'></td>
+                                        <td
+                                            style='width:48px;height:58px;border:2px solid #5140e8;border-radius:12px;text-align:center;font-size:26px;font-weight:800;color:#5140e8;'
+                                        >{{d3}}</td>
+                                        <td width='6'></td>
+                                        <td
+                                            style='width:48px;height:58px;border:2px solid #5140e8;border-radius:12px;text-align:center;font-size:26px;font-weight:800;color:#5140e8;'
+                                        >{{d4}}</td>
+                                        <td width='6'></td>
+                                        <td
+                                            style='width:48px;height:58px;border:2px solid #5140e8;border-radius:12px;text-align:center;font-size:26px;font-weight:800;color:#5140e8;'
+                                        >{{d5}}</td>
+                                        <td width='6'></td>
+                                        <td
+                                            style='width:48px;height:58px;border:2px solid #5140e8;border-radius:12px;text-align:center;font-size:26px;font-weight:800;color:#5140e8;'
+                                        >{{d6}}</td>
+
+                                    </tr>
+                                </table>
+
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td align='center'>
+
+                                <div
+                                    style='display:inline-block;background:#e8faf7;border:1px solid #15aa96;border-radius:30px;padding:8px 18px;font-size:13px;color:#15aa96;font-weight:600;'
+                                >
+                                    Expires in
+                                    {{minutes}}
+                                    minutes
+                                </div>
+
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td style='padding:30px'>
+
+                                <div
+                                    style='background:#fff5f8;border-left:4px solid #ed4181;padding:15px;border-radius:8px;font-size:13px;color:#666;'
+                                >
+                                    <strong style='color:#ed4181'>Security
+                                        notice:</strong>
+                                    If you didn't request this code, ignore this
+                                    email.
+                                </div>
+
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td
+                                align='center'
+                                style='padding:20px;background:#f8f8fc;font-size:12px;color:#777;'
+                            >
+                                © 2026 Wasla — All rights reserved
+                            </td>
+                        </tr>
+
+                    </table>
+
+                </td>
+            </tr>
+        </table>
+
     </body>
 </html>
