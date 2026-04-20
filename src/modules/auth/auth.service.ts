@@ -41,7 +41,7 @@ export class AuthService {
         });
 
         // TODO: add email as a job to bullmq
-        void this.sendOtp(createdUser.id, 'signup', lang).catch((err) =>
+        void this.sendOtp(createdUser.email, 'signup', lang).catch((err) =>
             console.log(err),
         );
         return createdUser;
@@ -61,7 +61,7 @@ export class AuthService {
             );
 
         if (!user.isVerified) {
-            void this.sendOtp(user.id, 'login', lang).catch((err) =>
+            void this.sendOtp(user.email, 'login', lang).catch((err) =>
                 console.log(err),
             );
             throw new ForbiddenException(
