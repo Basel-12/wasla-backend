@@ -59,4 +59,15 @@ export class AuthController {
     verifyOtp(@Body('userId') userId: number, @Body('otp') otp: number) {
         return this.authService.verifyOtp(userId, otp);
     }
+
+    @HttpCode(HttpStatus.OK)
+    @Post('/resend-otp')
+    @Version('1')
+    async resendOtp(@Body('userId') userId: number, @I18nLang() lang: string) {
+        await this.authService.sendOtp(userId, 'resend', lang);
+        return {
+            success: true,
+            message: this.i18nService.t('auth.OTPRESENT'),
+        };
+    }
 }
