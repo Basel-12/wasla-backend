@@ -3,6 +3,7 @@ import {
     ForbiddenException,
     Injectable,
     Logger,
+    NotFoundException,
     UnauthorizedException,
 } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
@@ -76,25 +77,29 @@ export class AuthService {
         };
     }
 
-    async sendOtp(userId: number, reason: string, lang: string) {
+    async sendOtp(email: string, reason: string, lang: string) {
         const otp = this.otpService.generateOtp(6);
         const otpString = otp.toString().padStart(6, '0').split('');
+        const user = await this.usersService.getUserByEmail(email);
+        if (!user) {
+            this.logger.error(`User ${email} not found`);
+            throw new NotFoundException(
+                this.i18nService.t('auth.USERNOTFOUND'),
+            );
+        }
         const otpEntity = await this.otpService.createOtp(
-            userId,
+            user.id,
             reason,
             otp,
             5,
         );
-        const user = await this.usersService.getUserById(userId);
-        this.logger.log(
-            `Sending OTP to user ${user?.email} for reason ${reason}`,
-        );
+        this.logger.log(`Sending OTP to user ${email} for reason ${reason}`);
         await this.mailQueueService.addSendMailJob({
             to: user?.email || '',
             subject: 'OTP Verification',
             template: 'otp',
             context: {
-                name: user?.name,
+                name: user.name,
                 otp: otp,
                 minutes: Math.ceil(
                     (new Date(otpEntity.expiresAt).getTime() - Date.now()) /
@@ -112,12 +117,19 @@ export class AuthService {
         return otp;
     }
 
-    async verifyOtp(userId: number, otp: number) {
-        const existingOtp = await this.otpService.verifyOtp(userId, otp);
+    async verifyOtp(email: string, otp: number) {
+        const user = await this.usersService.getUserByEmail(email);
+        if (!user) {
+            this.logger.error(`User ${email} not found`);
+            throw new NotFoundException(
+                this.i18nService.t('auth.USERNOTFOUND'),
+            );
+        }
+        const existingOtp = await this.otpService.verifyOtp(user.id, otp);
         if (existingOtp.expiresAt < new Date())
             throw new BadRequestException(
                 this.i18nService.t('auth.OTP_EXPIRED'),
             );
-        return this.usersService.updateUser(userId, { isVerified: true });
+        return this.usersService.updateUser(user.id, { isVerified: true });
     }
 }
