@@ -2,6 +2,7 @@ import {
     BadRequestException,
     ForbiddenException,
     Injectable,
+    Logger,
     UnauthorizedException,
 } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
@@ -22,6 +23,7 @@ export class AuthService {
         private i18nService: I18nService,
         private otpService: OtpService,
         private mailQueueService: MailQueueService,
+        private logger: Logger,
     ) {}
 
     async signup(newUser: CreateUserDto, lang: string) {
@@ -84,7 +86,9 @@ export class AuthService {
             5,
         );
         const user = await this.usersService.getUserById(userId);
-        // TODO: Send OTP to user via email
+        this.logger.log(
+            `Sending OTP to user ${user?.email} for reason ${reason}`,
+        );
         await this.mailQueueService.addSendMailJob({
             to: user?.email || '',
             subject: 'OTP Verification',
