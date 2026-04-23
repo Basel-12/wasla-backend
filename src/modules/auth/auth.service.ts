@@ -41,8 +41,8 @@ export class AuthService {
         });
 
         // TODO: add email as a job to bullmq
-        void this.sendOtp(createdUser.email, 'signup', lang).catch((err) =>
-            console.log(err),
+        void this.sendOtp(createdUser.email, 'verify_email', lang).catch(
+            (err) => this.logger.error(err),
         );
         return createdUser;
     }
@@ -61,8 +61,8 @@ export class AuthService {
             );
 
         if (!user.isVerified) {
-            void this.sendOtp(user.email, 'login', lang).catch((err) =>
-                console.log(err),
+            void this.sendOtp(user.email, 'verify_email', lang).catch((err) =>
+                this.logger.error(err),
             );
             throw new ForbiddenException(
                 this.i18nService.t('auth.USERNOTVERIFIED'),
@@ -87,6 +87,11 @@ export class AuthService {
                 this.i18nService.t('auth.USERNOTFOUND'),
             );
         }
+        if (reason === 'reset_password' && !user.isVerified) {
+            throw new BadRequestException(
+                this.i18nService.t('auth.USERNOTVERIFIED'),
+            );
+        }
         const otpEntity = await this.otpService.createOtp(
             user.id,
             reason,
@@ -96,7 +101,7 @@ export class AuthService {
         this.logger.log(`Sending OTP to user ${email} for reason ${reason}`);
         await this.mailQueueService.addSendMailJob({
             to: user?.email || '',
-            subject: 'OTP Verification',
+            subject: reason.replace('_', ' ').toUpperCase(),
             template: 'otp',
             context: {
                 name: user.name,
@@ -117,7 +122,7 @@ export class AuthService {
         return otp;
     }
 
-    async verifyOtp(email: string, otp: number) {
+    async verifyOtp(email: string, otp: number, reason?: string) {
         const user = await this.usersService.getUserByEmail(email);
         if (!user) {
             this.logger.error(`User ${email} not found`);
@@ -125,11 +130,65 @@ export class AuthService {
                 this.i18nService.t('auth.USERNOTFOUND'),
             );
         }
-        const existingOtp = await this.otpService.verifyOtp(user.id, otp);
+        const existingOtp = await this.otpService.verifyOtp(
+            user.id,
+            otp,
+            reason,
+        );
         if (existingOtp.expiresAt < new Date())
             throw new BadRequestException(
                 this.i18nService.t('auth.OTP_EXPIRED'),
             );
         return this.usersService.updateUser(user.id, { isVerified: true });
+    }
+
+    async verifyResetOtp(email: string, otp: number) {
+        const user = await this.usersService.getUserByEmail(email);
+        if (!user) {
+            this.logger.error(`User ${email} not found`);
+            throw new NotFoundException(
+                this.i18nService.t('auth.USERNOTFOUND'),
+            );
+        }
+        await this.otpService.verifyOtp(user.id, otp, 'reset_password');
+
+        //generate reset token
+        const resetToken = this.jwtService.sign(
+            { id: user.id, email: user.email, role: user.role },
+            {
+                expiresIn: this.config.get('RESET_TOKEN_EXPIRES_IN') || '10m',
+                secret: this.config.get('RESET_TOKEN_SECRET'),
+            },
+        );
+        return resetToken;
+    }
+
+    async resetPassword(password: string, resetToken: string) {
+        try {
+            const decoded = this.jwtService.verify<{
+                id: number;
+                email: string;
+                role: string;
+            }>(resetToken, {
+                secret: this.config.get('RESET_TOKEN_SECRET'),
+            });
+
+            const user = await this.usersService.getUserByEmail(decoded.email);
+            if (!user) {
+                throw new NotFoundException(
+                    this.i18nService.t('auth.USERNOTFOUND'),
+                );
+            }
+            const hashedPassword = await bcrypt.hash(password, 12);
+            await this.usersService.updateUser(user.id, {
+                password: hashedPassword,
+            });
+            return this.i18nService.t('auth.PASSWORDRESET');
+        } catch (error) {
+            this.logger.error(error);
+            throw new BadRequestException(
+                this.i18nService.t('auth.INVALIDRESETTOKEN'),
+            );
+        }
     }
 }

@@ -56,18 +56,67 @@ export class AuthController {
     @HttpCode(HttpStatus.OK)
     @Post('/verify-otp')
     @Version('1')
-    verifyOtp(@Body('email') email: string, @Body('otp') otp: number) {
-        return this.authService.verifyOtp(email, otp);
+    async verifyOtp(@Body('email') email: string, @Body('otp') otp: number) {
+        await this.authService.verifyOtp(email, otp);
+        return {
+            success: true,
+            message: this.i18nService.t('auth.OTPVERIFIED'),
+            data: null,
+        };
     }
 
     @HttpCode(HttpStatus.OK)
     @Post('/resend-otp')
     @Version('1')
     async resendOtp(@Body('email') email: string, @I18nLang() lang: string) {
-        await this.authService.sendOtp(email, 'resend', lang);
+        await this.authService.sendOtp(email, 'resend_otp', lang);
         return {
             success: true,
             message: this.i18nService.t('auth.OTPRESENT'),
+        };
+    }
+
+    @HttpCode(HttpStatus.OK)
+    @Post('/forgot-password')
+    @Version('1')
+    async forgotPassword(
+        @Body('email') email: string,
+        @I18nLang() lang: string,
+    ) {
+        await this.authService.sendOtp(email, 'reset_password', lang);
+        return {
+            success: true,
+            message: this.i18nService.t('auth.OTPRESENT'),
+            data: null,
+        };
+    }
+
+    @HttpCode(HttpStatus.OK)
+    @Post('/verify-reset-otp')
+    @Version('1')
+    async verifyResetOtp(
+        @Body('email') email: string,
+        @Body('otp') otp: number,
+    ) {
+        const resetToken = await this.authService.verifyResetOtp(email, otp);
+        return {
+            success: true,
+            message: this.i18nService.t('auth.OTPVERIFIED'),
+            data: resetToken,
+        };
+    }
+
+    @HttpCode(HttpStatus.OK)
+    @Post('/reset-password')
+    @Version('1')
+    async resetPassword(
+        @Body('reset_token') resetToken: string,
+        @Body('password') password: string,
+    ) {
+        await this.authService.resetPassword(password, resetToken);
+        return {
+            success: true,
+            message: this.i18nService.t('auth.PASSWORDRESET'),
         };
     }
 }

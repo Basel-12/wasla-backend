@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Otp } from './entities/otp.entity';
-import { MoreThan, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { I18nService } from 'nestjs-i18n';
 
 @Injectable()
@@ -33,17 +33,24 @@ export class OtpService {
         return this.otpRepository.save(newOtp);
     }
 
-    async verifyOtp(userId: number, otp: number) {
+    async verifyOtp(userId: number, otp: number, reason?: string) {
         const existingOtp = await this.otpRepository.findOne({
             where: {
                 user: { id: userId },
                 otp: otp.toString(),
-                expiresAt: MoreThan(new Date()),
+                reason: reason ? reason : undefined,
+            },
+            order: {
+                id: 'DESC',
             },
         });
         if (!existingOtp)
             throw new BadRequestException(
                 this.i18nService.t('auth.INVALIDOTP'),
+            );
+        if (existingOtp.expiresAt < new Date())
+            throw new BadRequestException(
+                this.i18nService.t('auth.OTP_EXPIRED'),
             );
         return existingOtp;
     }
