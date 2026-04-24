@@ -68,8 +68,12 @@ export class AuthController {
     @HttpCode(HttpStatus.OK)
     @Post('/resend-otp')
     @Version('1')
-    async resendOtp(@Body('email') email: string, @I18nLang() lang: string) {
-        await this.authService.sendOtp(email, 'resend_otp', lang);
+    async resendOtp(
+        @Body('email') email: string,
+        @I18nLang() lang: string,
+        @Body('reason') reason: string,
+    ) {
+        await this.authService.sendOtp(email, reason, lang);
         return {
             success: true,
             message: this.i18nService.t('auth.OTPRESENT'),
