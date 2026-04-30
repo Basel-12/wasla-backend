@@ -3,11 +3,13 @@ import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
+import { I18nService } from 'nestjs-i18n';
 
 @Injectable()
 export class UsersService {
     constructor(
         @InjectRepository(User) private usersRepository: Repository<User>,
+        private i18nService: I18nService,
     ) {}
 
     async getUserById(id: number): Promise<User | null> {
@@ -58,6 +60,20 @@ export class UsersService {
         }
         user.deletedAt = new Date();
         user.isActive = false;
+        return this.usersRepository.save(user);
+    }
+
+    async setUserFirebaseToken(
+        id: number,
+        firebaseToken: string,
+        deviceId: string,
+    ) {
+        const user = await this.getUserById(id);
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+        user.firebaseToken = firebaseToken;
+        user.deviceId = deviceId;
         return this.usersRepository.save(user);
     }
 }

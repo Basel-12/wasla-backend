@@ -24,6 +24,9 @@ import { BullModule } from '@nestjs/bullmq';
 import { LoggerModule } from './common/utils/logger.module';
 import { LoggerInterceptor } from './common/interceptors/logger.interceptor';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { NotificationsModule } from './modules/notifications/notifications.module';
+import { FirebaseModule } from './modules/firebase/firebase.module';
+import { NotificationQueueModule } from './modules/queues/notification-queue/notification-queue.module';
 
 @Module({
     imports: [
@@ -98,6 +101,9 @@ import { ServeStaticModule } from '@nestjs/serve-static';
         OtpModule,
         MailModule,
         MailQueueModule,
+        NotificationsModule,
+        FirebaseModule,
+        NotificationQueueModule,
     ],
     controllers: [AppController],
     providers: [
