@@ -1,3 +1,4 @@
+import { UserNotification } from '../../notifications/entities/user.notifications.entity';
 import { Otp } from '../../otp/entities/otp.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
@@ -37,6 +38,15 @@ export class User {
 
     @Column({ nullable: true })
     firebaseToken: string;
+
+    @Column({ nullable: true })
+    deviceId: string;
+
+    @OneToMany(
+        () => UserNotification,
+        (userNotification) => userNotification.user,
+    )
+    userNotifications: UserNotification[];
 
     @Column({ nullable: true })
     deletedAt: Date;
