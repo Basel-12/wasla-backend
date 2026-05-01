@@ -1,5 +1,5 @@
 import { Transform } from 'class-transformer';
-import { IsNotEmpty, IsObject, IsOptional, IsString } from 'class-validator';
+import { IsObject, IsOptional, IsString } from 'class-validator';
 
 function parseJsonField(value: unknown): Record<string, unknown> | undefined {
     if (!value) return undefined;
@@ -18,18 +18,18 @@ function parseJsonField(value: unknown): Record<string, unknown> | undefined {
     return parsed as Record<string, unknown>;
 }
 
-export class CreateNotificationDto {
+export class UpdateNotificationDto {
     @IsString()
-    @IsNotEmpty({ message: 'title should not be empty' })
-    title: string;
+    @IsOptional()
+    title?: string;
 
     @IsString()
-    @IsNotEmpty({ message: 'type should not be empty' })
-    type: string;
+    @IsOptional()
+    type?: string;
 
     @IsString()
-    @IsNotEmpty({ message: 'body should not be empty' })
-    body: string;
+    @IsOptional()
+    body?: string;
 
     @IsObject({ message: 'title_translations must be a valid JSON object' })
     @IsOptional()
