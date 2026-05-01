@@ -21,15 +21,15 @@ function parseJsonField(value: unknown): Record<string, unknown> | undefined {
 export class UpdateNotificationDto {
     @IsString()
     @IsOptional()
-    title: string;
+    title?: string;
 
     @IsString()
     @IsOptional()
-    type: string;
+    type?: string;
 
     @IsString()
     @IsOptional()
-    body: string;
+    body?: string;
 
     @IsObject({ message: 'title_translations must be a valid JSON object' })
     @IsOptional()

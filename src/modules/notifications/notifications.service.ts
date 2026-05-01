@@ -146,21 +146,18 @@ export class NotificationsService {
         lang: string = 'ar',
     ) {
         const user = await this.usersService.getUserById(userId);
-        if (!user) {
-            throw new NotFoundException('User not found');
-        }
 
         const notification = await this.getNotificationById(notificationId);
-        if (!notification) {
-            throw new NotFoundException('Notification not found');
-        }
 
         const userNotification = await this.createUserNotification({
             userId,
             notificationId,
         });
+        if (!user?.firebaseToken) {
+            return userNotification;
+        }
         await this.notificationQueueService.addSendOneNotificationJob({
-            fcmToken: user.firebaseToken,
+            fcmToken: user?.firebaseToken ?? '',
             title:
                 notification.title_translations?.[lang] || notification.title,
             body: notification.body_translations?.[lang] || notification.body,
@@ -182,13 +179,12 @@ export class NotificationsService {
             }),
         );
         const notification = await this.getNotificationById(notificationId);
-        if (!notification) {
-            throw new NotFoundException('Notification not found');
-        }
         const userNotifications =
             await this.userNotificationRepository.save(rows);
         const tokens = await this.usersService.getUsersFirebaseTokens(userIds);
-        console.log(tokens);
+        if (!tokens.length) {
+            return userNotifications;
+        }
         await this.notificationQueueService.addSendMultipleNotificationJob({
             fcmTokens: tokens,
             title:
