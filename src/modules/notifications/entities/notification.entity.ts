@@ -23,6 +23,12 @@ export class Notification {
     body: string;
 
     @Column({ type: 'jsonb', nullable: true })
+    title_translations: Record<string, string>;
+
+    @Column({ type: 'jsonb', nullable: true })
+    body_translations: Record<string, string>;
+
+    @Column({ type: 'jsonb', nullable: true })
     data: Record<string, any>;
 
     @OneToMany(

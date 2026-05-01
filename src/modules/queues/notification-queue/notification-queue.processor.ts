@@ -23,7 +23,7 @@ export class NotificationQueueProcessor extends WorkerHost {
                     fcmToken,
                     title,
                     body,
-                    data,
+                    data ?? undefined,
                 );
                 break;
             }
@@ -38,7 +38,7 @@ export class NotificationQueueProcessor extends WorkerHost {
                     fcmTokens,
                     title,
                     body,
-                    data,
+                    data ?? undefined,
                 );
                 break;
             }

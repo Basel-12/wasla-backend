@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -75,5 +75,17 @@ export class UsersService {
         user.firebaseToken = firebaseToken;
         user.deviceId = deviceId;
         return this.usersRepository.save(user);
+    }
+
+    async getUsersFirebaseTokens(userIds: number[]): Promise<string[]> {
+        const users = await this.usersRepository.find({
+            where: { id: In(userIds) },
+            select: ['firebaseToken'],
+        });
+        return (
+            users
+                .filter((user) => user.firebaseToken)
+                .map((user) => user.firebaseToken) ?? []
+        );
     }
 }
