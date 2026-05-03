@@ -129,7 +129,7 @@ export class NotificationsService {
         const userNotification = await this.userNotificationRepository.findOne({
             where: {
                 user: { id: userId },
-                notification: { id: notificationId },
+                id: notificationId
             },
         });
         if (!userNotification) {
