@@ -30,6 +30,7 @@ export class FirebaseService implements OnModuleInit {
                     ),
                 }),
             });
+            this.logger.log('Firebase service initialized');
         }
     }
 
