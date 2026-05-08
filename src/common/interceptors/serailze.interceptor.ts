@@ -26,8 +26,8 @@ export class SerailzeInterceptor implements NestInterceptor {
         return next.handle().pipe(
             map((data: any) => {
                 //code after the request is handled by the controller
-                const payload: any = data?.data ?? data;
-                return plainToClass(this.dto, payload, {
+                const payload: unknown = data?.data ?? data;
+                return plainToClass<unknown, unknown>(this.dto, payload, {
                     excludeExtraneousValues: true,
                 });
             }),

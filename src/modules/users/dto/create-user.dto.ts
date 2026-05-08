@@ -1,4 +1,12 @@
-import { IsEmail, IsNotEmpty, MinLength, IsString } from 'class-validator';
+import {
+    IsEmail,
+    IsNotEmpty,
+    MinLength,
+    IsString,
+    IsEnum,
+} from 'class-validator';
+import { Language } from '../entities/user.entity';
+import { i18nValidationMessage } from 'nestjs-i18n';
 
 export class CreateUserDto {
     @IsNotEmpty({ message: 'name should not be empty' })
@@ -13,11 +21,38 @@ export class CreateUserDto {
     // })
     // phone: string;
 
-    @IsNotEmpty({ message: 'email should not be empty' })
-    @IsEmail({}, { message: 'email must be a valid email address' })
+    @IsNotEmpty({
+        message: i18nValidationMessage(
+            'validation.must be a valid email address',
+        ),
+    })
+    @IsEmail(
+        {},
+        {
+            message: i18nValidationMessage(
+                'validation.must be a valid email address',
+            ),
+        },
+    )
     email: string;
 
-    @IsNotEmpty({ message: 'password should not be empty' })
-    @MinLength(8, { message: 'Password must be at least 8 characters long' })
+    @IsNotEmpty({
+        message: i18nValidationMessage('validation.must be a string'),
+    })
+    @MinLength(8, {
+        message: i18nValidationMessage(
+            'validation.must be at least {{minLength}} characters long',
+            { minLength: 8 },
+        ),
+    })
     password: string;
+
+    @IsNotEmpty({
+        message: i18nValidationMessage('validation.must be a string'),
+    })
+    @IsString({ message: i18nValidationMessage('validation.must be a string') })
+    @IsEnum(Language, {
+        message: i18nValidationMessage('validation.must be a valid language'),
+    })
+    preferredLanguage: string;
 }

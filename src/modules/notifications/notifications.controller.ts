@@ -10,6 +10,7 @@ import {
     Req,
     UnauthorizedException,
     UseGuards,
+    Query,
 } from '@nestjs/common';
 import { NotificationsService } from './notifications.service';
 import { CreateUserNotificationsDto } from './dto/create-user-notifications.dto';
@@ -18,6 +19,10 @@ import { I18nLang } from 'nestjs-i18n';
 import { UpdateNotificationDto } from './dto/update-notification.dto';
 import type { Request } from 'express';
 import { AuthGuard } from 'src/common/guards/auth.guard';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { PaginatedResult } from 'src/common/types/paginated-result';
+import { UserNotification } from './entities/user.notifications.entity';
+import { Notification } from './entities/notification.entity';
 
 @Controller('notifications')
 export class NotificationsController {
@@ -57,13 +62,17 @@ export class NotificationsController {
 
     @Get('/get-all-notifications')
     @Version('1')
-    async getAllNotifications() {
+    async getAllNotifications(@Query() dto: PaginationDto) {
         const notifications =
-            await this.notificationsService.getAllNotifications();
+            await this.notificationsService.getAllNotifications(dto);
+        const paginatedResult: PaginatedResult<Notification> = {
+            data: notifications.data,
+            meta: notifications.meta,
+        };
         return {
             success: true,
             message: 'All notifications fetched successfully',
-            data: notifications,
+            data: paginatedResult,
         };
     }
 
@@ -103,20 +112,28 @@ export class NotificationsController {
 
     @Get('/get-users-notifications')
     @Version('1')
-    async getAllUsersNotifications() {
+    async getAllUsersNotifications(@Query() dto: PaginationDto) {
         const userNotifications =
-            await this.notificationsService.getAllusersNotifications();
+            await this.notificationsService.getAllusersNotifications(dto);
+        const paginatedResult: PaginatedResult<UserNotification> = {
+            data: userNotifications.data,
+            meta: userNotifications.meta,
+        };
         return {
             success: true,
             message: 'All user notifications fetched successfully',
-            data: userNotifications,
+            data: paginatedResult,
         };
     }
 
     @Get('/get-user-notifications')
     @Version('1')
     @UseGuards(AuthGuard)
-    async getUserNotifications(@Req() req: Request, @I18nLang() lang: string) {
+    async getUserNotifications(
+        @Req() req: Request,
+        @I18nLang() lang: string,
+        @Query() dto: PaginationDto,
+    ) {
         const userId = req.user?.id;
         if (!userId) {
             throw new UnauthorizedException('User not found');
@@ -125,11 +142,16 @@ export class NotificationsController {
             await this.notificationsService.getAllUserNotifications(
                 Number(userId),
                 lang,
+                dto,
             );
+        const paginatedResult: PaginatedResult<UserNotification> = {
+            data: userNotifications.data,
+            meta: userNotifications.meta,
+        };
         return {
             success: true,
             message: 'User notifications fetched successfully',
-            data: userNotifications,
+            data: paginatedResult,
         };
     }
 
@@ -181,12 +203,10 @@ export class NotificationsController {
     @Version('1')
     async notifyUser(
         @Body() createUserNotificationsDto: CreateUserNotificationsDto,
-        @I18nLang() lang: string,
     ) {
         const userNotification = await this.notificationsService.notifyUser(
             createUserNotificationsDto.userId,
             createUserNotificationsDto.notificationId,
-            lang,
         );
         return {
             success: true,
@@ -199,12 +219,10 @@ export class NotificationsController {
     @Version('1')
     async notifyUsers(
         @Body() body: { userIds: number[]; notificationId: number },
-        @I18nLang() lang: string,
     ) {
         const userNotifications = await this.notificationsService.notifyUsers(
             body.userIds,
             body.notificationId,
-            lang,
         );
         return {
             success: true,

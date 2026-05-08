@@ -8,6 +8,10 @@ import { UsersService } from '../users/users.service';
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { CreateUserNotificationsDto } from './dto/create-user-notifications.dto';
 import { UpdateNotificationDto } from './dto/update-notification.dto';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { PaginatedMeta } from 'src/common/types/paginated-meta';
+import { PaginatedResult } from 'src/common/types/paginated-result';
+import { Language } from '../users/entities/user.entity';
 
 @Injectable()
 export class NotificationsService {
@@ -22,8 +26,23 @@ export class NotificationsService {
 
     //notifications methods
 
-    async getAllNotifications(): Promise<Notification[]> {
-        return this.notificationRepository.find();
+    async getAllNotifications(
+        dto: PaginationDto,
+    ): Promise<PaginatedResult<Notification>> {
+        const [rows, total] = await this.notificationRepository.findAndCount({
+            skip: dto.skip,
+            take: dto.limit,
+            order: { createdAt: 'DESC' },
+        });
+        return {
+            data: rows,
+            meta: {
+                total,
+                page: dto.page,
+                limit: dto.limit,
+                totalPages: Math.ceil(total / dto.limit),
+            },
+        };
     }
 
     async getNotificationById(id: number): Promise<Notification> {
@@ -64,20 +83,44 @@ export class NotificationsService {
 
     //user notifications methods
 
-    async getAllusersNotifications(): Promise<UserNotification[]> {
-        return this.userNotificationRepository.find();
+    async getAllusersNotifications(
+        dto: PaginationDto,
+    ): Promise<PaginatedResult<UserNotification>> {
+        const [rows, total] =
+            await this.userNotificationRepository.findAndCount({
+                skip: dto.skip,
+                take: dto.limit,
+                relations: ['notification'],
+                order: { createdAt: 'DESC' },
+            });
+        return {
+            data: rows,
+            meta: {
+                total,
+                page: dto.page,
+                limit: dto.limit,
+                totalPages: Math.ceil(total / dto.limit),
+            },
+        };
     }
 
     async getAllUserNotifications(
         userId: number,
         lang: string = 'ar',
-    ): Promise<UserNotification[]> {
-        const rows = await this.userNotificationRepository.find({
-            where: { user: { id: userId } },
-            relations: ['notification'],
-            order: { createdAt: 'DESC' },
-        });
-        return rows.map((row) => ({
+        query: PaginationDto,
+    ): Promise<{
+        data: UserNotification[];
+        meta: PaginatedMeta;
+    }> {
+        const [rows, total] =
+            await this.userNotificationRepository.findAndCount({
+                where: { user: { id: userId } },
+                relations: ['notification'],
+                order: { createdAt: 'DESC' },
+                skip: query.skip,
+                take: query.limit,
+            });
+        const data = rows.map((row) => ({
             ...row,
             notification: {
                 ...row.notification,
@@ -89,6 +132,13 @@ export class NotificationsService {
                     row.notification.body,
             },
         }));
+        const meta = {
+            total,
+            page: query.page,
+            limit: query.limit,
+            totalPages: Math.ceil(total / query.limit),
+        };
+        return { data, meta };
     }
 
     async getLastFiveUserNotifications(
@@ -140,12 +190,10 @@ export class NotificationsService {
         return this.userNotificationRepository.save(userNotification);
     }
 
-    async notifyUser(
-        userId: number,
-        notificationId: number,
-        lang: string = 'ar',
-    ) {
+    async notifyUser(userId: number, notificationId: number) {
         const user = await this.usersService.getUserById(userId);
+
+        const lang = user?.preferredLanguage ?? Language.AR;
 
         const notification = await this.getNotificationById(notificationId);
 
@@ -166,12 +214,7 @@ export class NotificationsService {
         return userNotification;
     }
 
-    async notifyUsers(
-        userIds: number[],
-        notificationId: number,
-        lang: string = 'ar',
-    ) {
-        console.log(userIds, notificationId, lang);
+    async notifyUsers(userIds: number[], notificationId: number) {
         const rows = userIds.map((userId) =>
             this.userNotificationRepository.create({
                 user: { id: userId },
@@ -185,13 +228,31 @@ export class NotificationsService {
         if (!tokens.length) {
             return userNotifications;
         }
-        await this.notificationQueueService.addSendMultipleNotificationJob({
-            fcmTokens: tokens,
-            title:
-                notification.title_translations?.[lang] ?? notification.title,
-            body: notification.body_translations?.[lang] ?? notification.body,
-            data: notification.data ?? undefined,
-        });
+
+        const grouped = tokens.reduce(
+            (acc, token) => {
+                const lang = token.lang ?? Language.AR;
+                if (!acc[lang]) acc[lang] = [];
+                acc[lang].push(token.fcmToken);
+                return acc;
+            },
+            {} as Record<string, string[]>,
+        );
+
+        await Promise.all(
+            Object.entries(grouped).map(([lang, fcmTokens]) =>
+                this.notificationQueueService.addSendMultipleNotificationJob({
+                    fcmTokens,
+                    title:
+                        notification.title_translations?.[lang] ??
+                        notification.title,
+                    body:
+                        notification.body_translations?.[lang] ??
+                        notification.body,
+                    data: notification.data ?? undefined,
+                }),
+            ),
+        );
         return userNotifications;
     }
 }

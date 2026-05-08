@@ -1,0 +1,11 @@
+{
+    "must be a string": "{{property}} يجب أن يكون نص",
+    "must be a valid email address": "{{property}} يجب أن يكون بريد إلكتروني صالح",
+    "must be a valid phone number": "{{property}} يجب أن يكون رقم هاتف صالح",
+    "must be at least {{minLength}} characters long": "{{property}} يجب أن يكون على الأقل {{minLength}} حرفًا",
+    "must be at most {{maxLength}} characters long": "{{property}} يجب أن يكون على الأقل {{maxLength}} حرفًا",
+    "must be greater than {{min}}": "{{property}} يجب أن يكون أكبر من {{min}}",
+    "must be less than {{max}}": "{{property}} يجب أن يكون أقل من {{max}}",
+    "must be a valid Egyptian phone number": "{{property}} يجب أن يكون رقم هاتف صالح لمصر",
+    "onlyImageFilesAllowed": "يجب أن يكون الملف صورة"
+}
