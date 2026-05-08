@@ -1,4 +1,4 @@
-import { BadRequestException, Module } from '@nestjs/common';
+import { BadRequestException, forwardRef, Module } from '@nestjs/common';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -46,7 +46,7 @@ import { NotificationsModule } from '../notifications/notifications.module';
                 },
             }),
         }),
-        NotificationsModule,
+        forwardRef(() => NotificationsModule),
     ],
     controllers: [UsersController],
     providers: [UsersService],

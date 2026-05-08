@@ -16,6 +16,7 @@ import * as bcrypt from 'bcrypt';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { PaginatedResult } from 'src/common/types/paginated-result';
 import { NotificationsService } from '../notifications/notifications.service';
+import { Inject, forwardRef } from '@nestjs/common';
 
 @Injectable()
 export class UsersService {
@@ -23,6 +24,7 @@ export class UsersService {
         @InjectRepository(User) private usersRepository: Repository<User>,
         private i18nService: I18nService,
         private logger: Logger,
+        @Inject(forwardRef(() => NotificationsService))
         private notificationsService: NotificationsService,
     ) {}
 
