@@ -1,6 +1,6 @@
-# GP Backend
+# Wasla Backend
 
-NestJS backend for authentication, users, OTP verification, email sending, and background mail jobs.
+NestJS backend for authentication, users management, OTP verification, avatar uploads, push notifications, and background jobs.
 
 ## Tech Stack
 
@@ -10,6 +10,8 @@ NestJS backend for authentication, users, OTP verification, email sending, and b
 - Redis + BullMQ
 - `@nestjs-modules/mailer` + Handlebars templates
 - `nestjs-i18n`
+- Firebase Admin (FCM)
+- Multer (file uploads)
 
 ## API Base URL
 
@@ -65,6 +67,14 @@ MAIL_PORT=587
 MAIL_USER=your_email@example.com
 MAIL_PASSWORD=your_password_or_app_password
 MAIL_FROM="GP Backend <no-reply@gp.local>"
+
+# Firebase
+FIREBASE_PROJECT_ID=your-project-id
+FIREBASE_CLIENT_EMAIL=your-service-account-email
+FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
+
+# Optional notification bootstrap id
+# WELCOME_NOTIFICATION_ID=1
 ```
 
 ## Running the App
@@ -102,6 +112,9 @@ npm run start:prod
 - `OtpModule`
 - `MailModule`
 - `MailQueueModule`
+- `NotificationsModule`
+- `FirebaseModule`
+- `NotificationQueueModule`
 
 ## Auth Endpoints
 
@@ -110,6 +123,10 @@ Base path: `/api/v1/auth`
 - `POST /signup`
 - `POST /login`
 - `POST /verify-otp`
+- `POST /resend-otp`
+- `POST /forgot-password`
+- `POST /verify-reset-otp`
+- `POST /reset-password`
 
 ### Signup Request Body
 
@@ -126,11 +143,28 @@ Notes:
 - Phone validation is configured for Egyptian numbers.
 - Global validation pipe is enabled with `whitelist: true`.
 
-## Protected User Endpoint
+## Users Endpoints
 
 Base path: `/api/v1/users`
 
-- `GET /me` (requires auth guard / valid JWT)
+Authenticated routes:
+
+- `GET /me`
+- `PATCH /update-profile`
+- `PATCH /change-password`
+- `PATCH /update-avatar` (multipart/form-data, field name: `avatar`)
+- `POST /set-firebase-token`
+- `PATCH /deactivate-user`
+
+Admin-only route:
+
+- `GET /all?page=<number>&limit=<number>`
+
+Notes:
+
+- `GET /all` requires admin role and uses pagination metadata (`total`, `page`, `limit`, `totalPages`).
+- Avatar files are stored in `public/uploads/avatars` and served under `/public`.
+- Stored avatar value is the filename (not absolute path).
 
 ## CORS
 
@@ -143,17 +177,7 @@ CORS is enabled globally with:
 
 A global `LoggerInterceptor` is registered in `AppModule` to log incoming requests and outgoing responses.
 
-## Accessing API from Mobile on Same Wi-Fi
-
-1. Start backend with `npm run start:dev`.
-2. Keep backend bound to all interfaces:
-   - in `src/main.ts`: `app.listen(process.env.PORT ?? 3000, '0.0.0.0')`
-3. Use your PC's **Wi-Fi adapter private IP** (for example `192.168.1.x`), not virtual adapter/public IP.
-4. Use that IP in your mobile app:
-   - `http://<your-private-ip>:3000/api/v1`
-5. Allow inbound TCP 3000 in Windows Firewall if needed.
-
 ## Notes
 
-- TypeORM currently uses `synchronize: true` in development.
-- Review this setting before production deployment.
+- TypeORM is configured with `synchronize: false`.
+- Use migrations for schema changes in shared environments.

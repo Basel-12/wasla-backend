@@ -1,0 +1,11 @@
+{
+    "must be a string": "{{property}} must be a string",
+    "must be a valid email address": "{{property}} must be a valid email address",
+    "must be a valid phone number": "{{property}} must be a valid phone number",
+    "must be at least {{minLength}} characters long": "{{property}} must be at least {{minLength}} characters long",
+    "must be at most {{maxLength}} characters long": "{{property}} must be at most {{maxLength}} characters long",
+    "must be greater than {{min}}": "{{property}} must be greater than {{min}}",
+    "must be less than {{max}}": "{{property}} must be less than {{max}}",
+    "must be a valid Egyptian phone number": "{{property}} must be a valid Egyptian phone number",
+    "onlyImageFilesAllowed": "The file must be an image"
+}

@@ -1,10 +1,21 @@
 import { UserNotification } from '../../notifications/entities/user.notifications.entity';
 import { Otp } from '../../otp/entities/otp.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+    Column,
+    DeleteDateColumn,
+    Entity,
+    OneToMany,
+    PrimaryGeneratedColumn,
+} from 'typeorm';
 
 export enum UserRole {
     USER = 'user',
     ADMIN = 'admin',
+}
+
+export enum Language {
+    AR = 'ar',
+    EN = 'en',
 }
 
 @Entity({ name: 'users' })
@@ -33,6 +44,12 @@ export class User {
     @Column({ default: false })
     isVerified: boolean;
 
+    @Column({ type: 'enum', enum: Language, default: Language.AR })
+    preferredLanguage: string;
+
+    @Column({ default: 'avatar.png' })
+    avatar: string;
+
     @Column({ default: true })
     isActive: boolean;
 
@@ -48,6 +65,6 @@ export class User {
     )
     userNotifications: UserNotification[];
 
-    @Column({ nullable: true })
-    deletedAt: Date;
+    @DeleteDateColumn({ type: 'timestamp', nullable: true })
+    deletedAt: Date | null;
 }

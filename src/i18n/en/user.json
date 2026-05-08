@@ -1,0 +1,7 @@
+{
+    "AVATARUPDATEDSUCCESSFULLY": "Profile picture has been updated successfully",
+    "INVALIDOLDPASSWORD": "Old password is incorrect",
+    "PASSWORDUPDATEDSUCCESSFULLY": "Password has been updated successfully",
+    "USERDEACTIVATEDSUCCESSFULLY": "User has been deactivated successfully",
+    "USERACTIVATEDSUCCESSFULLY": "User has been activated successfully"
+}

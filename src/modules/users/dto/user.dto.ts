@@ -1,5 +1,5 @@
-import { Expose } from 'class-transformer';
-import { UserRole } from '../entities/user.entity';
+import { Expose, Transform } from 'class-transformer';
+import { User, UserRole } from '../entities/user.entity';
 
 export class UserDto {
     @Expose()
@@ -20,4 +20,11 @@ export class UserDto {
     createdAt: Date;
     @Expose()
     updatedAt: Date;
+    @Expose()
+    preferredLanguage: string;
+    @Expose()
+    @Transform(({ obj }: { obj: User }) => {
+        return `${process.env.APP_URL}/public/uploads/avatars/${obj.avatar ?? 'avatar.png'}`;
+    })
+    avatar: string;
 }
