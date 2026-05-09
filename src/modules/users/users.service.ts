@@ -131,29 +131,25 @@ export class UsersService {
 
         //delete the old avatar
 
-        try {
-            const oldAvatar = user?.avatar;
+        const oldAvatar = user!.avatar;
+        const oldAvatarPath = path.join(
+            process.cwd(),
+            'public',
+            'uploads',
+            'avatars',
+            oldAvatar,
+        );
 
-            if (oldAvatar && oldAvatar !== 'avatar.png') {
-                const oldAvatarPath = path.join(
-                    process.cwd(),
-                    'public',
-                    'uploads',
-                    'avatars',
-                    oldAvatar,
-                );
-
+        if (oldAvatar && oldAvatar !== 'avatar.png') {
+            try {
                 await fs.unlink(oldAvatarPath);
-
-                user.avatar = file.filename;
-                return this.usersRepository.save(user);
+            } catch (e) {
+                this.logger.warn('Failed to delete old avatar file');
             }
-        } catch (err) {
-            this.logger.error(err);
-            throw new InternalServerErrorException(
-                this.i18nService.t('InternalServerError'),
-            );
         }
+
+        user!.avatar = file.filename;
+        return this.usersRepository.save(user!);
     }
 
     async updatePassword(id: number, oldPassword: string, newPassword: string) {
