@@ -79,7 +79,6 @@ export class UsersController {
 
     @Patch('/change-password')
     @Version('1')
-    @Serialize(UserDto)
     async updatePassword(
         @Body() updatePasswordDto: UpdatePasswordDto,
         @Req() request: Request,
