@@ -1,7 +1,6 @@
 import {
     BadRequestException,
     Injectable,
-    InternalServerErrorException,
     Logger,
     NotFoundException,
 } from '@nestjs/common';
@@ -15,8 +14,6 @@ import fs from 'fs/promises';
 import * as bcrypt from 'bcrypt';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { PaginatedResult } from 'src/common/types/paginated-result';
-import { NotificationsService } from '../notifications/notifications.service';
-import { Inject, forwardRef } from '@nestjs/common';
 
 @Injectable()
 export class UsersService {
@@ -24,8 +21,6 @@ export class UsersService {
         @InjectRepository(User) private usersRepository: Repository<User>,
         private i18nService: I18nService,
         private logger: Logger,
-        @Inject(forwardRef(() => NotificationsService))
-        private notificationsService: NotificationsService,
     ) {}
 
     async getUserById(id: number): Promise<User | null> {
@@ -68,14 +63,9 @@ export class UsersService {
         if (!user) {
             throw new NotFoundException('User not found');
         }
-
-        const isWasVerified = user.isVerified === true;
         Object.assign(user, attrs);
         const updatedUser = await this.usersRepository.save(user);
 
-        if (!isWasVerified && updatedUser.isVerified) {
-            await this.notificationsService.notifyUser(updatedUser.id, 1);
-        }
         return updatedUser;
     }
 
@@ -144,6 +134,7 @@ export class UsersService {
             try {
                 await fs.unlink(oldAvatarPath);
             } catch (e) {
+                this.logger.error(e);
                 this.logger.warn('Failed to delete old avatar file');
             }
         }
@@ -184,5 +175,23 @@ export class UsersService {
         user!.isActive = true;
         user!.deletedAt = null;
         return this.usersRepository.save(user!);
+    }
+
+    getNewlyVerifiedUsers() {
+        return this.usersRepository.find({
+            relations: ['userNotifications'],
+            where: {
+                isVerified: true,
+                userNotifications: {
+                    notification: {
+                        id: 1,
+                    },
+                },
+            },
+            order: {
+                createdAt: 'DESC',
+            },
+            select: ['id'],
+        });
     }
 }

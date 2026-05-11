@@ -1,4 +1,4 @@
-import { BadRequestException, forwardRef, Module } from '@nestjs/common';
+import { BadRequestException, Module } from '@nestjs/common';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -7,7 +7,6 @@ import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import path, { extname } from 'path';
 import { I18nService } from 'nestjs-i18n';
-import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
     imports: [
@@ -46,7 +45,6 @@ import { NotificationsModule } from '../notifications/notifications.module';
                 },
             }),
         }),
-        forwardRef(() => NotificationsModule),
     ],
     controllers: [UsersController],
     providers: [UsersService],

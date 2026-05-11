@@ -27,6 +27,8 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { FirebaseModule } from './modules/firebase/firebase.module';
 import { NotificationQueueModule } from './modules/queues/notification-queue/notification-queue.module';
+import { JobsModule } from './modules/jobs/jobs.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
     imports: [
@@ -97,6 +99,7 @@ import { NotificationQueueModule } from './modules/queues/notification-queue/not
             rootPath: path.join(__dirname, '..', 'public'),
             serveRoot: '/public',
         }),
+        ScheduleModule.forRoot(),
         AuthModule,
         OtpModule,
         MailModule,
@@ -104,6 +107,7 @@ import { NotificationQueueModule } from './modules/queues/notification-queue/not
         NotificationsModule,
         FirebaseModule,
         NotificationQueueModule,
+        JobsModule,
     ],
     controllers: [AppController],
     providers: [

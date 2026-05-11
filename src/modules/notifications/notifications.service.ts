@@ -12,7 +12,6 @@ import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { PaginatedMeta } from 'src/common/types/paginated-meta';
 import { PaginatedResult } from 'src/common/types/paginated-result';
 import { Language } from '../users/entities/user.entity';
-import { Inject, forwardRef } from '@nestjs/common';
 
 @Injectable()
 export class NotificationsService {
@@ -22,7 +21,6 @@ export class NotificationsService {
         @InjectRepository(UserNotification)
         private userNotificationRepository: Repository<UserNotification>,
         private notificationQueueService: NotificationQueueService,
-        @Inject(forwardRef(() => UsersService))
         private usersService: UsersService,
     ) {}
 

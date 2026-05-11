@@ -2,6 +2,7 @@ import { UserNotification } from '../../notifications/entities/user.notification
 import { Otp } from '../../otp/entities/otp.entity';
 import {
     Column,
+    CreateDateColumn,
     DeleteDateColumn,
     Entity,
     OneToMany,
@@ -67,4 +68,7 @@ export class User {
 
     @DeleteDateColumn({ type: 'timestamp', nullable: true })
     deletedAt: Date | null;
+
+    @CreateDateColumn({ type: 'timestamp' })
+    createdAt: Date;
 }
