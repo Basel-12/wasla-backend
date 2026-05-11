@@ -177,21 +177,23 @@ export class UsersService {
         return this.usersRepository.save(user!);
     }
 
-    getNewlyVerifiedUsers() {
-        return this.usersRepository.find({
-            relations: ['userNotifications'],
-            where: {
-                isVerified: true,
-                userNotifications: {
-                    notification: {
-                        id: 1,
-                    },
-                },
-            },
-            order: {
-                createdAt: 'DESC',
-            },
-            select: ['id'],
-        });
+    async getVerifiedUsersWithoutWelcomeNotification() {
+        return this.usersRepository
+            .createQueryBuilder('user')
+            .select(['user.id'])
+            .where('user.isVerified = :isVerified', { isVerified: true })
+            .andWhere((qb) => {
+                const subQuery = qb
+                    .subQuery()
+                    .select('1')
+                    .from('user_notifications', 'un')
+                    .where('un.userId = user.id')
+                    .andWhere('un.notificationId = :notificationId')
+                    .getQuery();
+
+                return `NOT EXISTS ${subQuery}`;
+            })
+            .setParameter('notificationId', 1)
+            .getMany();
     }
 }

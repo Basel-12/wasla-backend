@@ -14,7 +14,8 @@ export class JobsService {
     @Cron('*/5 * * * *')
     async handleUserVerification() {
         this.Logger.log('Sending Welcome Notification to newly verified users');
-        const users = await this.usersService.getNewlyVerifiedUsers();
+        const users =
+            await this.usersService.getVerifiedUsersWithoutWelcomeNotification();
         if (users.length > 0) {
             await this.notificationsService.notifyUsers(
                 users.map((user) => user.id),
