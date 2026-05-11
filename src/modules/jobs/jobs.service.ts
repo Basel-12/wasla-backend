@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { NotificationsService } from '../notifications/notifications.service';
-import { Cron } from '@nestjs/schedule';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class JobsService {
@@ -11,7 +11,7 @@ export class JobsService {
         private Logger: Logger,
     ) {}
 
-    @Cron('*/5 * * * *')
+    @Cron(CronExpression.EVERY_DAY_AT_11AM)
     async handleUserVerification() {
         this.Logger.log('Sending Welcome Notification to newly verified users');
         const users =
