@@ -136,4 +136,17 @@ export class AuthController {
             data: { access_token, refresh_token },
         };
     }
+
+    @HttpCode(HttpStatus.OK)
+    @Post('/google-login')
+    @Version('1')
+    async googleLogin(@Body('token') token: string) {
+        const { access_token, refresh_token } =
+            await this.authService.googleLogin(token);
+        return {
+            success: true,
+            message: this.i18nService.t('auth.LOGINSUCCESSFUL'),
+            data: { access_token, refresh_token },
+        };
+    }
 }
