@@ -19,6 +19,11 @@ export enum Language {
     EN = 'en',
 }
 
+export enum Provider {
+    LOCAL = 'local',
+    GOOGLE = 'google',
+    FACEBOOK = 'facebook',
+}
 @Entity({ name: 'users' })
 export class User {
     @PrimaryGeneratedColumn()
@@ -33,11 +38,17 @@ export class User {
     @Column({ unique: true })
     email: string;
 
-    @Column()
-    password: string;
+    @Column({ nullable: true, type: 'varchar' })
+    password: string | null;
 
     @Column({ type: 'enum', enum: UserRole, default: UserRole.USER })
     role: UserRole;
+
+    @Column({ enum: Provider, default: Provider.LOCAL })
+    provider: string;
+
+    @Column({ nullable: true, type: 'varchar' })
+    providerId: string | null;
 
     @OneToMany(() => Otp, (otp) => otp.user)
     otps: Otp[];

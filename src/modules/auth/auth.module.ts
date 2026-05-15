@@ -6,6 +6,8 @@ import { OtpModule } from '../otp/otp.module';
 import { MailModule } from '../mail/mail.module';
 import { MailQueueModule } from '../queues/mail-queue/mail-queue.module';
 import { LoggerModule } from 'src/common/utils/logger.module';
+import { TokenService } from './token.service';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
     imports: [
@@ -14,8 +16,9 @@ import { LoggerModule } from 'src/common/utils/logger.module';
         MailModule,
         MailQueueModule,
         LoggerModule,
+        PassportModule,
     ],
     controllers: [AuthController],
-    providers: [AuthService],
+    providers: [AuthService, TokenService],
 })
 export class AuthModule {}
