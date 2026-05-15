@@ -5,7 +5,7 @@ import {
     NotFoundException,
 } from '@nestjs/common';
 import { In, Repository } from 'typeorm';
-import { User } from './entities/user.entity';
+import { Provider, User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { I18nService } from 'nestjs-i18n';
@@ -195,5 +195,30 @@ export class UsersService {
             })
             .setParameter('notificationId', 1)
             .getMany();
+    }
+
+    async getUserByEmailOrProviderId(email: string, providerId: string) {
+        return this.usersRepository.findOne({
+            where: [{ email }, { providerId: providerId }],
+        });
+    }
+
+    async createGoogleUser(payload: {
+        email: string;
+        name: string;
+        avatar: string;
+        sub: string;
+    }) {
+        const user = this.usersRepository.create({
+            email: payload.email,
+            name: payload.name,
+            avatar: payload.avatar,
+            providerId: payload.sub,
+            provider: Provider.GOOGLE,
+            isVerified: true,
+            isActive: true,
+            // preferredLanguage: Language.AR,
+        });
+        return this.usersRepository.save(user);
     }
 }

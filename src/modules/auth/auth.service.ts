@@ -14,6 +14,11 @@ import { ConfigService } from '@nestjs/config';
 import { I18nService } from 'nestjs-i18n';
 import { OtpService } from '../otp/otp.service';
 import { MailQueueService } from '../queues/mail-queue/mail-queue.service';
+import { TokenService } from './token.service';
+import { JwtPayload } from './types/jwt.paylpad';
+import { OAuth2Client } from 'google-auth-library';
+
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 @Injectable()
 export class AuthService {
@@ -24,6 +29,7 @@ export class AuthService {
         private i18nService: I18nService,
         private otpService: OtpService,
         private mailQueueService: MailQueueService,
+        private tokenService: TokenService,
         private logger: Logger,
     ) {}
 
@@ -54,7 +60,10 @@ export class AuthService {
                 this.i18nService.t('auth.INVALIDCREDENTIALS'),
             );
 
-        const isPasswordCorrect = await bcrypt.compare(password, user.password);
+        const isPasswordCorrect = await bcrypt.compare(
+            password,
+            user.password ?? '',
+        );
         if (!isPasswordCorrect)
             throw new UnauthorizedException(
                 this.i18nService.t('auth.INVALIDCREDENTIALS'),
@@ -69,12 +78,8 @@ export class AuthService {
             );
         }
 
-        const payload = { id: user.id, role: user.role };
-        return {
-            access_token: this.jwtService.sign(payload, {
-                expiresIn: this.config.get('JWT_EXPIRES_IN') || '1d',
-            }),
-        };
+        const payload: JwtPayload = { id: user.id, role: user.role };
+        return this.tokenService.createTokenPair(payload);
     }
 
     async sendOtp(email: string, reason: string, lang: string) {
@@ -188,6 +193,68 @@ export class AuthService {
             this.logger.error(error);
             throw new BadRequestException(
                 this.i18nService.t('auth.INVALIDRESETTOKEN'),
+            );
+        }
+    }
+
+    refreshToken(refreshToken: string) {
+        const decoded = this.tokenService.verifyRefreshToken(refreshToken);
+        if (!decoded) {
+            throw new UnauthorizedException(
+                this.i18nService.t('auth.INVALIDTOKEN'),
+            );
+        }
+        const payload: JwtPayload = { id: decoded.id, role: decoded.role };
+        return this.tokenService.createTokenPair(payload);
+    }
+
+    async googleLogin(token: string) {
+        try {
+            const ticket = await googleClient.verifyIdToken({
+                idToken: token,
+                audience: process.env.GOOGLE_CLIENT_ID,
+            });
+
+            const p = ticket.getPayload();
+            this.logger.log(p);
+            if (!p) {
+                throw new BadRequestException(
+                    this.i18nService.t('auth.INVALIDGOOGLETOKEN'),
+                );
+            }
+            const payload: {
+                email: string;
+                name: string;
+                avatar: string;
+                sub: string;
+            } = {
+                email: p.email ?? '',
+                name: p.profile ?? '',
+                avatar: p.picture ?? '',
+                sub: p.sub ?? '',
+            };
+            // find user by email or this sub id
+            let user = await this.usersService.getUserByEmailOrProviderId(
+                payload.email,
+                payload.sub,
+            );
+            if (!user) {
+                user = await this.usersService.createGoogleUser({
+                    email: payload.email ?? '',
+                    name: payload.name ?? '',
+                    avatar: payload.avatar ?? '',
+                    sub: payload.sub ?? '',
+                });
+            }
+
+            return this.tokenService.createTokenPair({
+                id: user.id,
+                role: user.role,
+            });
+        } catch (error) {
+            this.logger.error(error);
+            throw new BadRequestException(
+                this.i18nService.t('auth.INVALIDGOOGLETOKEN'),
             );
         }
     }
