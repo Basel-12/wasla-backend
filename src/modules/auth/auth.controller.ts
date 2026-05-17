@@ -143,6 +143,7 @@ export class AuthController {
     async googleLogin(@Body('token') token: string) {
         const { access_token, refresh_token } =
             await this.authService.googleLogin(token);
+        console.log(access_token, refresh_token);
         return {
             success: true,
             message: this.i18nService.t('auth.LOGINSUCCESSFUL'),
