@@ -1,30 +1,35 @@
 import { Expose, Transform } from 'class-transformer';
-import { User, UserRole } from '../entities/user.entity';
+import { Provider, User, UserRole } from '../entities/user.entity';
 
 export class UserDto {
     @Expose()
-    id: number;
+    id!: number;
     @Expose()
-    name: string;
+    name!: string;
     @Expose()
-    phone: string;
+    phone!: string;
     @Expose()
-    email: string;
+    email!: string;
     @Expose()
-    role: UserRole;
+    role!: UserRole;
     @Expose()
-    isVerified: boolean;
+    isVerified!: boolean;
     @Expose()
-    isActive: boolean;
+    isActive!: boolean;
     @Expose()
-    createdAt: Date;
+    createdAt!: Date;
     @Expose()
-    updatedAt: Date;
+    updatedAt!: Date;
     @Expose()
-    preferredLanguage: string;
+    preferredLanguage!: string;
     @Expose()
     @Transform(({ obj }: { obj: User }) => {
+        if (
+            obj.provider !== Provider[Provider.LOCAL] &&
+            obj.avatar !== 'avatar.png'
+        )
+            return obj.avatar;
         return `${process.env.APP_URL}/public/uploads/avatars/${obj.avatar ?? 'avatar.png'}`;
     })
-    avatar: string;
+    avatar!: string;
 }

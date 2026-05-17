@@ -229,7 +229,7 @@ export class AuthService {
                 sub: string;
             } = {
                 email: p.email ?? '',
-                name: p.profile ?? '',
+                name: p.name ?? '',
                 avatar: p.picture ?? '',
                 sub: p.sub ?? '',
             };
