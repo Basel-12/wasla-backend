@@ -40,7 +40,7 @@ export class AuthController {
         @Body('password') password: string,
         @I18nLang() lang: string,
     ) {
-        const { access_token } = await this.authService.login(
+        const { access_token, refresh_token } = await this.authService.login(
             email,
             password,
             lang,
@@ -48,7 +48,10 @@ export class AuthController {
         return {
             success: true,
             message: this.i18nService.t('auth.LOGINSUCCESSFUL'),
-            data: access_token,
+            data: {
+                access_token,
+                refresh_token,
+            },
         };
     }
 
