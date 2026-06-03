@@ -227,7 +227,7 @@ export class AuthService {
                 name: string;
                 avatar: string;
                 sub: string;
-                locale: string;
+                locale?: string;
             } = {
                 email: p.email ?? '',
                 name: p.name ?? '',
