@@ -11,7 +11,7 @@ export class JobsService {
         private Logger: Logger,
     ) {}
 
-    @Cron(CronExpression.EVERY_30_MINUTES)
+    @Cron(CronExpression.EVERY_10_MINUTES)
     async handleUserVerification() {
         this.Logger.log('Sending Welcome Notification to newly verified users');
         const users =
