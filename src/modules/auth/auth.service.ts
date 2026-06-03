@@ -242,7 +242,7 @@ export class AuthService {
                 user = await this.usersService.createGoogleUser({
                     email: payload.email ?? '',
                     name: payload.name ?? '',
-                    avatar: payload.avatar ?? '',
+                    avatar: payload.avatar.replace(/=s\d+-c/, '=s400-c') ?? '',
                     sub: payload.sub ?? '',
                 });
             }
