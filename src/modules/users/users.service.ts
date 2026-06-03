@@ -5,7 +5,7 @@ import {
     NotFoundException,
 } from '@nestjs/common';
 import { In, Repository } from 'typeorm';
-import { Provider, User } from './entities/user.entity';
+import { Language, Provider, User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { I18nService } from 'nestjs-i18n';
@@ -208,6 +208,7 @@ export class UsersService {
         name: string;
         avatar: string;
         sub: string;
+        locale?: string;
     }) {
         const user = this.usersRepository.create({
             email: payload.email,
@@ -217,7 +218,8 @@ export class UsersService {
             provider: Provider.GOOGLE,
             isVerified: true,
             isActive: true,
-            // preferredLanguage: Language.AR,
+            preferredLanguage:
+                payload.locale == 'en' ? Language.EN : Language.AR,
         });
         return this.usersRepository.save(user);
     }

@@ -227,11 +227,13 @@ export class AuthService {
                 name: string;
                 avatar: string;
                 sub: string;
+                locale: string;
             } = {
                 email: p.email ?? '',
                 name: p.name ?? '',
                 avatar: p.picture ?? '',
                 sub: p.sub ?? '',
+                locale: p.locale?.split('-')[0],
             };
             // find user by email or this sub id
             let user = await this.usersService.getUserByEmailOrProviderId(
@@ -244,6 +246,7 @@ export class AuthService {
                     name: payload.name ?? '',
                     avatar: payload.avatar.replace(/=s\d+-c/, '=s400-c') ?? '',
                     sub: payload.sub ?? '',
+                    locale: payload.locale,
                 });
             }
 
