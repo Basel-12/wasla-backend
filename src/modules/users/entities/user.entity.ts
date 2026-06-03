@@ -1,3 +1,4 @@
+import { FavoriteWords } from 'src/modules/favorite-words/entites/favorite-words.entity';
 import { UserNotification } from '../../notifications/entities/user.notifications.entity';
 import { Otp } from '../../otp/entities/otp.entity';
 import {
@@ -76,6 +77,9 @@ export class User {
         (userNotification) => userNotification.user,
     )
     userNotifications: UserNotification[];
+
+    @OneToMany(() => FavoriteWords, (favoriteWords) => favoriteWords.user)
+    favoriteWords: FavoriteWords[];
 
     @DeleteDateColumn({ type: 'timestamp', nullable: true })
     deletedAt: Date | null;

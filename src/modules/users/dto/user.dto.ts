@@ -25,6 +25,7 @@ export class UserDto {
     @Expose()
     @Transform(({ obj }: { obj: User }) => {
         if (
+            obj.avatar.startsWith('http') &&
             obj.provider !== Provider[Provider.LOCAL] &&
             obj.avatar !== 'avatar.png'
         )

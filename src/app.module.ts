@@ -29,6 +29,7 @@ import { FirebaseModule } from './modules/firebase/firebase.module';
 import { NotificationQueueModule } from './modules/queues/notification-queue/notification-queue.module';
 import { JobsModule } from './modules/jobs/jobs.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { FavoriteWordsModule } from './modules/favorite-words/favorite-words.module';
 
 @Module({
     imports: [
@@ -108,6 +109,7 @@ import { ScheduleModule } from '@nestjs/schedule';
         FirebaseModule,
         NotificationQueueModule,
         JobsModule,
+        FavoriteWordsModule,
     ],
     controllers: [AppController],
     providers: [
