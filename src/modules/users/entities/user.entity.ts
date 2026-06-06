@@ -1,4 +1,4 @@
-import { FavoriteWords } from 'src/modules/favorite-words/entites/favorite-words.entity';
+import { FavoriteWords } from '../../../modules/favorite-words/entites/favorite-words.entity';
 import { UserNotification } from '../../notifications/entities/user.notifications.entity';
 import { Otp } from '../../otp/entities/otp.entity';
 import {
