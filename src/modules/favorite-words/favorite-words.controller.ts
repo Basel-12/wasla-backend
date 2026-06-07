@@ -40,19 +40,6 @@ export class FavoriteWordsController {
         };
     }
 
-    @Get('/:id')
-    @UseGuards(AuthGuard, RolesGuard)
-    @Roles(UserRole.ADMIN)
-    @Version('1')
-    async getUserFavoriteWordById(@Param('id', ParseIntPipe) id: number) {
-        const result = await this.favoriteWordsService.getFavouriteWordById(id);
-        return {
-            success: true,
-            message: 'Fetched Successfully',
-            data: result,
-        };
-    }
-
     @Get('/my-words')
     @Roles(UserRole.USER)
     @UseGuards(AuthGuard, RolesGuard)
@@ -84,6 +71,19 @@ export class FavoriteWordsController {
             id,
             user.id,
         );
+        return {
+            success: true,
+            message: 'Fetched Successfully',
+            data: result,
+        };
+    }
+
+    @Get('/:id')
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles(UserRole.ADMIN)
+    @Version('1')
+    async getUserFavoriteWordById(@Param('id', ParseIntPipe) id: number) {
+        const result = await this.favoriteWordsService.getFavouriteWordById(id);
         return {
             success: true,
             message: 'Fetched Successfully',
