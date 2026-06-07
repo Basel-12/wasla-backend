@@ -3,6 +3,8 @@ import {
     Controller,
     Delete,
     Get,
+    HttpCode,
+    HttpStatus,
     Param,
     ParseIntPipe,
     Patch,
@@ -27,65 +29,113 @@ export class FavoriteWordsController {
     @Get('/')
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(UserRole.ADMIN)
-    getUserFavoriteWords(@Query() query: PaginationDto) {
-        return this.favoriteWordsService.getAll(query);
+    async getUserFavoriteWords(@Query() query: PaginationDto) {
+        const result = await this.favoriteWordsService.getAll(query);
+        return {
+            success: true,
+            message: 'Fetched Successfully',
+            data: result,
+        };
     }
 
     @Get('/:id')
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(UserRole.ADMIN)
-    getUserFavoriteWordById(@Param('id', ParseIntPipe) id: number) {
-        return this.favoriteWordsService.getFavouriteWordById(id);
+    async getUserFavoriteWordById(@Param('id', ParseIntPipe) id: number) {
+        const result = await this.favoriteWordsService.getFavouriteWordById(id);
+        return {
+            success: true,
+            message: 'Fetched Successfully',
+            data: result,
+        };
     }
 
     @Get('/my-words')
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(UserRole.USER)
-    getUserFavouriteWords(
+    async getUserFavouriteWords(
         @CurrentUser() user: JwtPayload,
         @Query() query: PaginationDto,
     ) {
-        return this.favoriteWordsService.getUserFavouriteWords(user.id, query);
+        const result = await this.favoriteWordsService.getUserFavouriteWords(
+            user.id,
+            query,
+        );
+        return {
+            success: true,
+            message: 'Fetched Successfully',
+            data: result,
+        };
     }
 
     @Get('/my-words/:id')
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(UserRole.USER)
-    getUserFavouriteWordById(
+    async getUserFavouriteWordById(
         @Param('id', ParseIntPipe) id: number,
         @CurrentUser() user: JwtPayload,
     ) {
-        return this.favoriteWordsService.getUserFavouriteWordById(id, user.id);
+        const result = await this.favoriteWordsService.getUserFavouriteWordById(
+            id,
+            user.id,
+        );
+        return {
+            success: true,
+            message: 'Fetched Successfully',
+            data: result,
+        };
     }
 
     @Post('/')
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(UserRole.USER)
-    createFavouriteWord(
+    @HttpCode(HttpStatus.CREATED)
+    async createFavouriteWord(
         @Body('word') word: string,
         @CurrentUser() user: JwtPayload,
     ) {
-        return this.favoriteWordsService.createFavouriteWord(word, user.id);
+        const result = await this.favoriteWordsService.createFavouriteWord(
+            word,
+            user.id,
+        );
+        return {
+            success: true,
+            message: 'Created Successfully',
+            data: result,
+        };
     }
 
     @Patch('/:id')
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(UserRole.USER)
-    updateFavouriteWord(
+    async updateFavouriteWord(
         @Param('id', ParseIntPipe) id: number,
         @Body('word') word: string,
         @CurrentUser() user: JwtPayload,
     ) {
-        return this.favoriteWordsService.updateFavouriteWord(id, word, user.id);
+        const result = await this.favoriteWordsService.updateFavouriteWord(
+            id,
+            word,
+            user.id,
+        );
+        return {
+            success: true,
+            message: 'Updated Successfully',
+            data: result,
+        };
     }
 
     @Delete('/:id')
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(UserRole.USER)
-    deleteFavouriteWord(
+    async deleteFavouriteWord(
         @Param('id', ParseIntPipe) id: number,
         @CurrentUser() user: JwtPayload,
     ) {
-        return this.favoriteWordsService.deleteFavouriteWord(id, user.id);
+        await this.favoriteWordsService.deleteFavouriteWord(id, user.id);
+        return {
+            success: true,
+            message: 'Deleted Successfully',
+        };
     }
 }
