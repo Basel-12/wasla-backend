@@ -9,7 +9,7 @@ import { Reflector } from '@nestjs/core';
 import { I18nService } from 'nestjs-i18n';
 import { Observable } from 'rxjs';
 import { ROLES_KEY } from '../decorators/roles.decorator';
-import { UserRole } from 'src/modules/users/entities/user.entity';
+import { UserRole } from '../../modules/users/entities/user.entity';
 import { JwtPayload } from 'jsonwebtoken';
 import { Request } from 'express';
 
