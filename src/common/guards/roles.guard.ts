@@ -38,6 +38,9 @@ export class RolesGuard implements CanActivate {
         const request: Request = context.switchToHttp().getRequest();
         const user = request.user as AuthenticatedUser | undefined;
 
+        console.log('requiredRoles:', requiredRoles);
+        console.log('user:', user);
+
         if (!user)
             throw new UnauthorizedException(
                 this.i18nService.t('auth.INVALIDTOKEN'),

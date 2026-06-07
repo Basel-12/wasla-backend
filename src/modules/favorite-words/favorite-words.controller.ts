@@ -28,8 +28,8 @@ export class FavoriteWordsController {
     constructor(private readonly favoriteWordsService: FavoriteWordsService) {}
 
     @Get('/')
-    @Roles(UserRole.ADMIN)
     @UseGuards(AuthGuard, RolesGuard)
+    @Roles(UserRole.ADMIN)
     @Version('1')
     async getUserFavoriteWords(@Query() query: PaginationDto) {
         const result = await this.favoriteWordsService.getAll(query);
@@ -41,8 +41,8 @@ export class FavoriteWordsController {
     }
 
     @Get('/:id')
-    @Roles(UserRole.ADMIN)
     @UseGuards(AuthGuard, RolesGuard)
+    @Roles(UserRole.ADMIN)
     @Version('1')
     async getUserFavoriteWordById(@Param('id', ParseIntPipe) id: number) {
         const result = await this.favoriteWordsService.getFavouriteWordById(id);
@@ -73,8 +73,8 @@ export class FavoriteWordsController {
     }
 
     @Get('/my-words/:id')
-    @Roles(UserRole.USER)
     @UseGuards(AuthGuard, RolesGuard)
+    @Roles(UserRole.USER)
     @Version('1')
     async getUserFavouriteWordById(
         @Param('id', ParseIntPipe) id: number,
@@ -92,8 +92,8 @@ export class FavoriteWordsController {
     }
 
     @Post('/')
-    @Roles(UserRole.USER)
     @UseGuards(AuthGuard, RolesGuard)
+    @Roles(UserRole.USER)
     @HttpCode(HttpStatus.CREATED)
     @Version('1')
     async createFavouriteWord(
@@ -112,8 +112,8 @@ export class FavoriteWordsController {
     }
 
     @Patch('/:id')
-    @Roles(UserRole.USER)
     @UseGuards(AuthGuard, RolesGuard)
+    @Roles(UserRole.USER)
     @Version('1')
     async updateFavouriteWord(
         @Param('id', ParseIntPipe) id: number,
@@ -133,8 +133,8 @@ export class FavoriteWordsController {
     }
 
     @Delete('/:id')
-    @Roles(UserRole.USER)
     @UseGuards(AuthGuard, RolesGuard)
+    @Roles(UserRole.USER)
     @Version('1')
     async deleteFavouriteWord(
         @Param('id', ParseIntPipe) id: number,
