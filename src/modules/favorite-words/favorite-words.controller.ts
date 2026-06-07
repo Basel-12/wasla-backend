@@ -12,6 +12,7 @@ import {
     Query,
     Request,
     UseGuards,
+    Version,
 } from '@nestjs/common';
 import { FavoriteWordsService } from './favorite-words.service';
 import { AuthGuard } from '../../common/guards/auth.guard';
@@ -29,6 +30,7 @@ export class FavoriteWordsController {
     @Get('/')
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(UserRole.ADMIN)
+    @Version('1')
     async getUserFavoriteWords(@Query() query: PaginationDto) {
         const result = await this.favoriteWordsService.getAll(query);
         return {
@@ -41,6 +43,7 @@ export class FavoriteWordsController {
     @Get('/:id')
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(UserRole.ADMIN)
+    @Version('1')
     async getUserFavoriteWordById(@Param('id', ParseIntPipe) id: number) {
         const result = await this.favoriteWordsService.getFavouriteWordById(id);
         return {
@@ -53,6 +56,7 @@ export class FavoriteWordsController {
     @Get('/my-words')
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(UserRole.USER)
+    @Version('1')
     async getUserFavouriteWords(
         @CurrentUser() user: JwtPayload,
         @Query() query: PaginationDto,
@@ -71,6 +75,7 @@ export class FavoriteWordsController {
     @Get('/my-words/:id')
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(UserRole.USER)
+    @Version('1')
     async getUserFavouriteWordById(
         @Param('id', ParseIntPipe) id: number,
         @CurrentUser() user: JwtPayload,
@@ -90,6 +95,7 @@ export class FavoriteWordsController {
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(UserRole.USER)
     @HttpCode(HttpStatus.CREATED)
+    @Version('1')
     async createFavouriteWord(
         @Body('word') word: string,
         @CurrentUser() user: JwtPayload,
@@ -108,6 +114,7 @@ export class FavoriteWordsController {
     @Patch('/:id')
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(UserRole.USER)
+    @Version('1')
     async updateFavouriteWord(
         @Param('id', ParseIntPipe) id: number,
         @Body('word') word: string,
@@ -128,6 +135,7 @@ export class FavoriteWordsController {
     @Delete('/:id')
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(UserRole.USER)
+    @Version('1')
     async deleteFavouriteWord(
         @Param('id', ParseIntPipe) id: number,
         @CurrentUser() user: JwtPayload,
