@@ -1,4 +1,3 @@
-import { Type } from 'class-transformer';
 import {
     IsArray,
     IsNotEmpty,
@@ -13,15 +12,15 @@ import {
 export class AnalyticsEventItemDto {
     @IsString()
     @IsNotEmpty()
-    label: string;
+    label!: string;
 
     @IsNumber()
     @Min(0)
     @Max(1)
-    confidence: number;
+    confidence!: number;
 
     @IsNumber()
-    timestamp: number;
+    timestamp!: number;
 
     @IsOptional()
     @IsString()
@@ -31,6 +30,5 @@ export class AnalyticsEventItemDto {
 export class LogEventsDto {
     @IsArray()
     @ValidateNested({ each: true })
-    @Type(() => AnalyticsEventItemDto)
-    events: AnalyticsEventItemDto[];
+    events!: AnalyticsEventItemDto[];
 }

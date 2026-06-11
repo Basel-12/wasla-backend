@@ -5,7 +5,8 @@ import {
     OnModuleInit,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import * as admin from 'firebase-admin';
+import { cert, getApps, initializeApp } from 'firebase-admin/app';
+import { BatchResponse, Message, MulticastMessage, getMessaging } from 'firebase-admin/messaging';
 
 @Injectable()
 export class FirebaseService implements OnModuleInit {
@@ -16,18 +17,14 @@ export class FirebaseService implements OnModuleInit {
 
     onModuleInit() {
         this.logger.log('Initializing Firebase service');
-        if (!admin.apps.length) {
-            admin.initializeApp({
-                credential: admin.credential.cert({
-                    projectId: this.configService.get<string>(
-                        'FIREBASE_PROJECT_ID',
-                    ),
+        if (!getApps().length) {
+            initializeApp({
+                credential: cert({
+                    projectId: this.configService.get<string>('FIREBASE_PROJECT_ID'),
                     privateKey: this.configService
                         .get<string>('FIREBASE_PRIVATE_KEY')
                         ?.replace(/\\n/g, '\n'),
-                    clientEmail: this.configService.get<string>(
-                        'FIREBASE_CLIENT_EMAIL',
-                    ),
+                    clientEmail: this.configService.get<string>('FIREBASE_CLIENT_EMAIL'),
                 }),
             });
             this.logger.log('Firebase service initialized');
@@ -41,34 +38,22 @@ export class FirebaseService implements OnModuleInit {
         data?: Record<string, any>,
     ): Promise<string> {
         try {
-            const message: admin.messaging.Message = {
+            const message: Message = {
                 token: fcmToken,
-                notification: {
-                    title,
-                    body,
-                },
+                notification: { title, body },
                 data,
                 android: {
                     priority: 'high',
-                    notification: {
-                        sound: 'default',
-                    },
+                    notification: { sound: 'default' },
                 },
                 apns: {
-                    payload: {
-                        aps: {
-                            sound: 'default',
-                        },
-                    },
+                    payload: { aps: { sound: 'default' } },
                 },
             };
-            const response = await admin.messaging().send(message);
-            return response;
+            return await getMessaging().send(message);
         } catch (err) {
             this.logger.error(err);
-            throw new InternalServerErrorException(
-                'Failed to send notification',
-            );
+            throw new InternalServerErrorException('Failed to send notification');
         }
     }
 
@@ -77,25 +62,17 @@ export class FirebaseService implements OnModuleInit {
         title: string,
         body: string,
         data?: Record<string, any>,
-    ): Promise<admin.messaging.BatchResponse> {
+    ): Promise<BatchResponse> {
         try {
-            const message: admin.messaging.MulticastMessage = {
+            const message: MulticastMessage = {
                 tokens: fcmTokens,
-                notification: {
-                    title,
-                    body,
-                },
+                notification: { title, body },
                 data: data ?? {},
             };
-            const response = await admin
-                .messaging()
-                .sendEachForMulticast(message);
-            return response;
+            return await getMessaging().sendEachForMulticast(message);
         } catch (err) {
             this.logger.error(err);
-            throw new InternalServerErrorException(
-                'Failed to send notification',
-            );
+            throw new InternalServerErrorException('Failed to send notification');
         }
     }
 }

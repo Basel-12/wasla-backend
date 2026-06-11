@@ -111,6 +111,7 @@ import { AnalyticsModule } from './modules/analytics/analytics.module';
         NotificationQueueModule,
         JobsModule,
         FavoriteWordsModule,
+        AnalyticsModule,
     ],
     controllers: [AppController],
     providers: [

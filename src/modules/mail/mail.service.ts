@@ -26,9 +26,8 @@ export class MailService {
                 to,
                 subject,
                 from: this.configService.get('MAIL_FROM'),
-                template: template,
+                template: `${locale || 'ar'}/${template}`,
                 context: context,
-                locale: locale || 'ar',
             });
         } catch (err) {
             //Log the error
