@@ -1,14 +1,14 @@
-import { Type } from 'class-transformer';
+import { Transform } from 'class-transformer';
 import { IsOptional, IsPositive } from 'class-validator';
 
 export class PaginationDto {
     @IsOptional()
-    @Type(() => Number)
+    @Transform(({ value }) => Number(value), { toClassOnly: true })
     @IsPositive()
     page: number = 1;
 
     @IsOptional()
-    @Type(() => Number)
+    @Transform(({ value }) => Number(value), { toClassOnly: true })
     @IsPositive()
     limit: number = 10;
 
