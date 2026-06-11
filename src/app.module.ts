@@ -30,6 +30,7 @@ import { NotificationQueueModule } from './modules/queues/notification-queue/not
 import { JobsModule } from './modules/jobs/jobs.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { FavoriteWordsModule } from './modules/favorite-words/favorite-words.module';
+import { AnalyticsModule } from './modules/analytics/analytics.module';
 
 @Module({
     imports: [
